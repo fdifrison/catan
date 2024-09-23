@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+  datasource:
+    username: user
+    password: user
+    url: jdbc:postgresql://localhost:54321/catan
+
+  jackson:
+    default-property-inclusion: NON_NULL

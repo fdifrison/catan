@@ -11,11 +11,13 @@
     <groupId>com.fdifrison.catan.core</groupId>
     <artifactId>catan</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>catan</name>
-    <description>catan</description>
+    <name>Catan Game Assistant</name>
+    <description>A webapp to assist catan players</description>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>21</java.version>
+        <jib-maven-plugin.version>3.3.2</jib-maven-plugin.version>
+        <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -31,12 +33,12 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -49,6 +51,37 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <java>
+                        <palantirJavaFormat/>
+                        <importOrder/>
+                        <removeUnusedImports/>
+                        <formatAnnotations/>
+                    </java>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>eclipse-temurin:21-jre</image>
+                    </from>
+                </configuration>
             </plugin>
         </plugins>
     </build>

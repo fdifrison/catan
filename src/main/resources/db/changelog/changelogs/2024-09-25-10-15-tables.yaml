@@ -1,0 +1,172 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: fdifrison
+      changes:
+        - createTable:
+            tableName: player
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avatar_url
+                  type: text
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 2
+      author: fdifrison
+      changes:
+        - createTable:
+            tableName: game
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: start_timestamp
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_timestamp
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: true
+
+  - changeSet:
+      id: 3
+      author: fdifrison
+      changes:
+        - createTable:
+            tableName: game_player
+            columns:
+              - column:
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: game_player_id
+                    referencedTableName: player
+                    referencedColumnNames: id
+                    foreignKeyName: game_player_player_id
+              - column:
+                  name: game_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: game_player_id
+                    referencedTableName: game
+                    referencedColumnNames: id
+                    foreignKeyName: game_player_game_id
+              - column:
+                  name: longest_road
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: largest_army
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: score
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: victory_points
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ranking
+                  type: smallint
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 4
+      author: fdifrison
+      changes:
+        - createTable:
+            tableName: roll
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: roll_player_id
+                  type: int
+              - column:
+                  name: roll_game_id
+                  type: int
+              - column:
+                  name: roll_timestamp
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: outcome
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: develop_card_drawn
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: develop_cart_played
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: roads_built
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: colonies_built
+                  type: smallint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cities_built
+                  type: smallint
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 5
+      author: fdifrison
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: roll
+            baseColumnNames: roll_player_id, roll_game_id
+            constraintName: roll_game_player_id
+            referencedTableName: game_player
+            referencedColumnNames: player_id, game_id
+
+

@@ -54,4 +54,4 @@ jobs:
       - name: 'Deploy'
         run: |
           mvn -B compile jib:build  \
-          -Dimage=ghcr.io/${{ github.repository }}-${{ github.ref_name}}:latest
+          -Dimage=ghcr.io/${{ github.repository }}-${{ github.ref }}:latest

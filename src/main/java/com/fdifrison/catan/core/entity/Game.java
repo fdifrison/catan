@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "game")
@@ -13,6 +14,7 @@ public class Game {
     @SequenceGenerator(name = "game_id_gen", sequenceName = "game_id_seq", allocationSize = 25)
     private Long id;
 
+    @CreationTimestamp
     @Column(name = "start_timestamp", nullable = false)
     private Instant startTimestamp;
 

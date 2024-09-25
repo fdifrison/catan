@@ -2,6 +2,7 @@ package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "roll")
@@ -9,12 +10,12 @@ public class Roll {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roll_id_gen")
     @SequenceGenerator(name = "roll_id_gen", sequenceName = "roll_id_seq", allocationSize = 25)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private GamePlayer gamePlayer;
 
+    @CreationTimestamp
     @Column(name = "roll_timestamp", nullable = false)
     private Instant rollTimestamp;
 

@@ -10,16 +10,15 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_id_gen")
     @SequenceGenerator(name = "player_id_gen", sequenceName = "player_id_seq", allocationSize = 25)
-    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "avatar_url", length = Integer.MAX_VALUE)
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
     @OneToMany(mappedBy = "player")

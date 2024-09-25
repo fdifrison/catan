@@ -1,9 +1,7 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
-
 import java.time.Instant;
-import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "roll")
@@ -109,5 +107,4 @@ public class Roll {
     public void setCitiesBuilt(Short citiesBuilt) {
         this.citiesBuilt = citiesBuilt;
     }
-
 }

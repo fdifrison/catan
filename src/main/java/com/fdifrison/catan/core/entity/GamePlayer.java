@@ -1,7 +1,6 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -111,5 +110,4 @@ public class GamePlayer {
     public void setRolls(Set<Roll> rolls) {
         this.rolls = rolls;
     }
-
 }

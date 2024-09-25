@@ -1,9 +1,7 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
-
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -55,5 +53,4 @@ public class Game {
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
     }
-
 }

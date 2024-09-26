@@ -57,58 +57,60 @@ databaseChangeLog:
       author: fdifrison
       changes:
         - createTable:
-            tableName: game_player
+            tableName: player_score
             columns:
-              - column:
-                  name: player_id
-                  type: bigint
-                  constraints:
-                    primaryKey: true
-                    primaryKeyName: game_player_id
-                    referencedTableName: player
-                    referencedColumnNames: id
-                    foreignKeyName: game_player_player_id
               - column:
                   name: game_id
                   type: bigint
                   constraints:
-                    primaryKey: true
-                    primaryKeyName: game_player_id
                     referencedTableName: game
                     referencedColumnNames: id
-                    foreignKeyName: game_player_game_id
+                    foreignKeyName: player_score_game_id
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_unique
+              - column:
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: player
+                    referencedColumnNames: id
+                    foreignKeyName: player_score_player_id
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_unique
+              - column:
+                  name: start_order
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_unique
               - column:
                   name: longest_road
                   type: boolean
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: largest_army
                   type: boolean
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: score
-                  type: smallint
+                  type: int
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: victory_points
-                  type: smallint
+                  type: int
                   constraints:
-                    nullable: false
-              - column:
-                  name: ranking
-                  type: smallint
-                  constraints:
-                    nullable: false
+                    nullable: true
 
   - changeSet:
       id: 4
       author: fdifrison
       changes:
         - createTable:
-            tableName: roll
+            tableName: turn
             columns:
               - column:
                   name: id
@@ -117,11 +119,19 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: roll_player_id
-                  type: int
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: player
+                    referencedColumnNames: id
+                    foreignKeyName: turn_player_id
               - column:
-                  name: roll_game_id
-                  type: int
+                  name: game_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: game
+                    referencedColumnNames: id
+                    foreignKeyName: turn_game_id
               - column:
                   name: roll_timestamp
                   type: timestamp with time zone
@@ -158,15 +168,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-  - changeSet:
-      id: 5
-      author: fdifrison
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: roll
-            baseColumnNames: roll_player_id, roll_game_id
-            constraintName: roll_game_player_id
-            referencedTableName: game_player
-            referencedColumnNames: player_id, game_id
+
+
 
 

@@ -1,8 +1,9 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "player")
@@ -10,57 +11,65 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_id_gen")
     @SequenceGenerator(name = "player_id_gen", sequenceName = "player_id_seq", allocationSize = 25)
-    private Long id;
+    @Column(name = "id")
+    private long id;
 
-    @Column(name = "name", nullable = false)
+    @NotNull @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email", nullable = false)
+    @NotNull @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @OneToMany(mappedBy = "player")
-    private Set<GamePlayer> gamePlayers = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Turn> turns = new ArrayList<>();
 
-    public Long getId() {
+    public Player addTurn(Turn turn) {
+        this.turns.add(turn);
+        turn.setPlayer(this);
+        return this;
+    }
+
+    public void removeTurn(Turn turn) {
+        this.turns.remove(turn);
+        turn.setPlayer(null);
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public Player setId(long id) {
         this.id = id;
+        return this;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Player setName(@NotNull String name) {
         this.name = name;
+        return this;
     }
 
-    public String getEmail() {
+    public @NotNull String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public Player setEmail(@NotNull String email) {
         this.email = email;
+        return this;
     }
 
     public String getAvatarUrl() {
         return avatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
+    public Player setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
-    }
-
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+        return this;
     }
 }

@@ -1,14 +1,14 @@
 package com.fdifrison.catan.core.service;
 
-import com.fdifrison.catan.core.repository.RollRepository;
+import com.fdifrison.catan.core.repository.TurnRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RollService {
 
-    private final RollRepository rollRepository;
+    private final TurnRepository turnRepository;
 
-    public RollService(RollRepository rollRepository) {
-        this.rollRepository = rollRepository;
+    public RollService(TurnRepository turnRepository) {
+        this.turnRepository = turnRepository;
     }
 }

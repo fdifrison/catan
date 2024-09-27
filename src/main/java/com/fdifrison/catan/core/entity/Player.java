@@ -9,8 +9,7 @@ import java.util.List;
 @Table(name = "player")
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_id_gen")
-    @SequenceGenerator(name = "player_id_gen", sequenceName = "player_id_seq", allocationSize = 25)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 

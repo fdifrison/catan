@@ -10,8 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "game")
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_gen")
-    @SequenceGenerator(name = "game_id_gen", sequenceName = "game_id_seq", allocationSize = 25)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 

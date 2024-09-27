@@ -17,7 +17,7 @@ public class CatanApplication {
         SpringApplication.run(CatanApplication.class, args);
     }
 
-
+    @Bean
     CommandLineRunner commandLineRunner(GameService gameService, PlayerService playerService) {
         return args -> {
             var p1Id = playerService.newPlayer(new PlayerDTO("aaa", "aaa@email", null));

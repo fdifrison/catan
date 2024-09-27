@@ -2,7 +2,6 @@ package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.PlayerDTO;
 import com.fdifrison.catan.core.dto.mapper.PlayerMapper;
-import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 

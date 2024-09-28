@@ -115,7 +115,6 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
-                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
@@ -168,7 +167,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-
+  - changeSet:
+      id: turn-sequence
+      author: fdifrison
+      changes:
+        - createSequence:
+            startValue: 1
+            incrementBy: 50
+            sequenceName: turn_seq
 
 
 

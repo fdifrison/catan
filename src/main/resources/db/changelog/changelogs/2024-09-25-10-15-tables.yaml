@@ -27,6 +27,12 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: true
+              - column:
+                  name: deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+
 
   - changeSet:
       id: 2

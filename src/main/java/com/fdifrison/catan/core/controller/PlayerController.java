@@ -20,4 +20,15 @@ public class PlayerController {
     public long newPlayer(@RequestBody PlayerDTO playerDTO) {
         return playerService.newPlayer(playerDTO);
     }
+
+    @GetMapping("{id}")
+    public PlayerDTO getPlayer(@PathVariable long id) {
+        return playerService.getPlayer(id);
+    }
+
+
+    @PutMapping("{id}")
+    public void updatePlayer(@PathVariable long id, @RequestBody PlayerDTO playerDTO) {
+        playerService.updatePlayer(id, playerDTO);
+    }
 }

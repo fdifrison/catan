@@ -3,6 +3,8 @@ package com.fdifrison.catan.core.controller;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.PlayerScoreDTO;
 import com.fdifrison.catan.core.service.GameService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -34,5 +36,11 @@ public class GameController {
     @GetMapping("{id}/score")
     public List<PlayerScoreDTO> getGameRanking(@PathVariable long id) {
         return gameService.getGameRanking(id);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGame(@PathVariable long id) {
+        gameService.deleteGame(id);
     }
 }

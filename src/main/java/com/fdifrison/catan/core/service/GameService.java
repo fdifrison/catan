@@ -45,4 +45,9 @@ public class GameService {
                 .map(PlayerScoreMapper.INSTANCE::toDto)
                 .toList();
     }
+
+    public void deleteGame(long id) {
+        var game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
+        gameRepository.deleteById(game.getId());
+    }
 }

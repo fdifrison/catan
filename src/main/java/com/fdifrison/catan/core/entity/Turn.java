@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "turn")
 public class Turn {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "turn_seq")
     @Column(name = "id", nullable = false)
     private long id;
 

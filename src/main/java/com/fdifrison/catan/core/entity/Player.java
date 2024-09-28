@@ -22,6 +22,9 @@ public class Player {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
+    @Column(name = "deleted")
+    private boolean deleted;
+
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Turn> turns = new ArrayList<>();
 
@@ -70,5 +73,13 @@ public class Player {
     public Player setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return this;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

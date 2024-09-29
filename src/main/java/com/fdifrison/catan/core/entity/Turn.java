@@ -41,8 +41,8 @@ public class Turn {
     @Column(name = "develop_card_drawn", nullable = false)
     private int developCardDrawn;
 
-    @NotNull @Column(name = "develop_cart_played", nullable = false)
-    private boolean developCartPlayed = false;
+    @NotNull @Column(name = "develop_card_played", nullable = false)
+    private boolean developCardPlayed = false;
 
     @NotNull @Min(0)
     @Column(name = "roads_built", nullable = false)
@@ -122,12 +122,13 @@ public class Turn {
         return this;
     }
 
-    @NotNull public boolean isDevelopCartPlayed() {
-        return developCartPlayed;
+    @NotNull
+    public boolean isDevelopCardPlayed() {
+        return developCardPlayed;
     }
 
-    public Turn setDevelopCartPlayed(@NotNull boolean developCartPlayed) {
-        this.developCartPlayed = developCartPlayed;
+    public Turn setDevelopCardPlayed(@NotNull boolean developCardPlayed) {
+        this.developCardPlayed = developCardPlayed;
         return this;
     }
 

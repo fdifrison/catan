@@ -158,7 +158,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: develop_cart_played
+                  name: develop_card_played
                   type: boolean
                   constraints:
                     nullable: false

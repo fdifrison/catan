@@ -13,8 +13,8 @@ public class Player {
     @Column(name = "id")
     private long id;
 
-    @NotNull @Column(name = "name", nullable = false)
-    private String name;
+    @NotNull @Column(name = "username", nullable = false)
+    private String username;
 
     @NotNull @Column(name = "email", nullable = false)
     private String email;
@@ -48,12 +48,12 @@ public class Player {
         return this;
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull String getUsername() {
+        return username;
     }
 
-    public Player setName(@NotNull String name) {
-        this.name = name;
+    public Player setUsername(@NotNull String username) {
+        this.username = username;
         return this;
     }
 

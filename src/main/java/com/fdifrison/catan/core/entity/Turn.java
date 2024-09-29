@@ -101,8 +101,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    @Min(2)
+    @NotNull @Min(2)
     @Max(12)
     public int getOutcome() {
         return outcome;
@@ -113,8 +112,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    @Min(0)
+    @NotNull @Min(0)
     public int getDevelopCardDrawn() {
         return developCardDrawn;
     }
@@ -124,8 +122,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    public boolean isDevelopCartPlayed() {
+    @NotNull public boolean isDevelopCartPlayed() {
         return developCartPlayed;
     }
 
@@ -134,8 +131,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    @Min(0)
+    @NotNull @Min(0)
     public int getRoadsBuilt() {
         return roadsBuilt;
     }
@@ -145,8 +141,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    @Min(0)
+    @NotNull @Min(0)
     public int getColoniesBuilt() {
         return coloniesBuilt;
     }
@@ -156,8 +151,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    @Min(0)
+    @NotNull @Min(0)
     public int getCitiesBuilt() {
         return citiesBuilt;
     }

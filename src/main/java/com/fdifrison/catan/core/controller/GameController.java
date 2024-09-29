@@ -3,8 +3,6 @@ package com.fdifrison.catan.core.controller;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.PlayerScoreDTO;
 import com.fdifrison.catan.core.service.GameService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;

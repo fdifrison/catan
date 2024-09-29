@@ -23,8 +23,7 @@ public class TurnController {
     }
 
     @PutMapping("{id}")
-    public void endTurn(@PathVariable long id ,@RequestBody EndTurnDTO endTurnDTO) {
+    public void endTurn(@PathVariable long id, @RequestBody EndTurnDTO endTurnDTO) {
         turnService.endTurn(id, endTurnDTO);
     }
-
 }

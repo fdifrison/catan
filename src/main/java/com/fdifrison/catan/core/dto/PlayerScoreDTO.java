@@ -14,15 +14,4 @@ public record PlayerScoreDTO(
     public PlayerScoreDTO(long playerId, int startOrder) {
         this(playerId, startOrder, false, false, 0, 0);
     }
-
-    @Override
-    public String toString() {
-        return "PlayerScoreDTO{" + "playerId="
-                + playerId + ", startOrder="
-                + startOrder + ", longestRoad="
-                + longestRoad + ", largestArmy="
-                + largestArmy + ", score="
-                + score + ", victoryPoints="
-                + victoryPoints + '}';
-    }
 }

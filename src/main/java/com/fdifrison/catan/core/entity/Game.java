@@ -18,7 +18,6 @@ public class Game {
     @Column(name = "start_timestamp", nullable = false)
     private Instant startTimestamp;
 
-    @UpdateTimestamp
     @Column(name = "end_timestamp")
     private Instant endTimestamp;
 

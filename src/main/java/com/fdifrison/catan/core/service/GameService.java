@@ -8,7 +8,6 @@ import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import jakarta.validation.Valid;
-
 import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "turn")
@@ -24,32 +25,36 @@ public class Turn {
     private Game game;
 
     @CreationTimestamp
-    @Column(name = "roll_timestamp", nullable = false)
-    private Instant rollTimestamp;
+    @Column(name = "start_timestamp", nullable = false)
+    private Instant startTimestamp;
+
+    @UpdateTimestamp
+    @Column(name = "end_timestamp")
+    private Instant endTimestamp;
 
     @NotNull @Min(2)
     @Max(12)
     @Column(name = "outcome", nullable = false)
-    private Short outcome;
+    private int outcome;
 
     @NotNull @Min(0)
     @Column(name = "develop_card_drawn", nullable = false)
-    private Short developCardDrawn;
+    private int developCardDrawn;
 
     @NotNull @Column(name = "develop_cart_played", nullable = false)
-    private Boolean developCartPlayed = false;
+    private boolean developCartPlayed = false;
 
     @NotNull @Min(0)
     @Column(name = "roads_built", nullable = false)
-    private Short roadsBuilt;
+    private int roadsBuilt;
 
     @NotNull @Min(0)
     @Column(name = "colonies_built", nullable = false)
-    private Short coloniesBuilt;
+    private int coloniesBuilt;
 
     @NotNull @Min(0)
     @Column(name = "cities_built", nullable = false)
-    private Short citiesBuilt;
+    private int citiesBuilt;
 
     public long getId() {
         return id;
@@ -78,65 +83,86 @@ public class Turn {
         return this;
     }
 
-    public Instant getRollTimestamp() {
-        return rollTimestamp;
+    public Instant getStartTimestamp() {
+        return startTimestamp;
     }
 
-    public Turn setRollTimestamp(Instant rollTimestamp) {
-        this.rollTimestamp = rollTimestamp;
+    public Turn setStartTimestamp(Instant startTimestamp) {
+        this.startTimestamp = startTimestamp;
         return this;
     }
 
-    public @NotNull @Min(2) @Max(12) Short getOutcome() {
+    public Instant getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public Turn setEndTimestamp(Instant endTimestamp) {
+        this.endTimestamp = endTimestamp;
+        return this;
+    }
+
+    @NotNull
+    @Min(2)
+    @Max(12)
+    public int getOutcome() {
         return outcome;
     }
 
-    public Turn setOutcome(@NotNull @Min(2) @Max(12) Short outcome) {
+    public Turn setOutcome(@NotNull @Min(2) @Max(12) int outcome) {
         this.outcome = outcome;
         return this;
     }
 
-    public @NotNull @Min(0) Short getDevelopCardDrawn() {
+    @NotNull
+    @Min(0)
+    public int getDevelopCardDrawn() {
         return developCardDrawn;
     }
 
-    public Turn setDevelopCardDrawn(@NotNull @Min(0) Short developCardDrawn) {
+    public Turn setDevelopCardDrawn(@NotNull @Min(0) int developCardDrawn) {
         this.developCardDrawn = developCardDrawn;
         return this;
     }
 
-    public @NotNull Boolean getDevelopCartPlayed() {
+    @NotNull
+    public boolean isDevelopCartPlayed() {
         return developCartPlayed;
     }
 
-    public Turn setDevelopCartPlayed(@NotNull Boolean developCartPlayed) {
+    public Turn setDevelopCartPlayed(@NotNull boolean developCartPlayed) {
         this.developCartPlayed = developCartPlayed;
         return this;
     }
 
-    public @NotNull @Min(0) Short getRoadsBuilt() {
+    @NotNull
+    @Min(0)
+    public int getRoadsBuilt() {
         return roadsBuilt;
     }
 
-    public Turn setRoadsBuilt(@NotNull @Min(0) Short roadsBuilt) {
+    public Turn setRoadsBuilt(@NotNull @Min(0) int roadsBuilt) {
         this.roadsBuilt = roadsBuilt;
         return this;
     }
 
-    public @NotNull @Min(0) Short getColoniesBuilt() {
+    @NotNull
+    @Min(0)
+    public int getColoniesBuilt() {
         return coloniesBuilt;
     }
 
-    public Turn setColoniesBuilt(@NotNull @Min(0) Short coloniesBuilt) {
+    public Turn setColoniesBuilt(@NotNull @Min(0) int coloniesBuilt) {
         this.coloniesBuilt = coloniesBuilt;
         return this;
     }
 
-    public @NotNull @Min(0) Short getCitiesBuilt() {
+    @NotNull
+    @Min(0)
+    public int getCitiesBuilt() {
         return citiesBuilt;
     }
 
-    public Turn setCitiesBuilt(@NotNull @Min(0) Short citiesBuilt) {
+    public Turn setCitiesBuilt(@NotNull @Min(0) int citiesBuilt) {
         this.citiesBuilt = citiesBuilt;
         return this;
     }

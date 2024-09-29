@@ -8,6 +8,8 @@ import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import jakarta.validation.Valid;
+
+import java.time.Instant;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +32,12 @@ public class GameService {
         return gameRepository.save(new Game().setPlayerScores(playerList)).getId();
     }
 
+    @Transactional
     public GameDTO updateScoreAndEndGame(long id, @Valid List<PlayerScoreDTO> players) {
         var game = gameRepository.findWithScoreById(id).orElseThrow(GameNotFoundException::new);
         var playerScoreList =
                 players.stream().map(PlayerScoreMapper.INSTANCE::toEntity).toList();
-        game.setPlayerScores(playerScoreList);
-        gameRepository.saveAndFlush(game);
+        game.setPlayerScores(playerScoreList).setEndTimestamp(Instant.now());
         return GameMapper.INSTANCE.toDto(game);
     }
 

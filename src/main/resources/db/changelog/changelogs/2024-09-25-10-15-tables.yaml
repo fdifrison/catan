@@ -130,6 +130,7 @@ databaseChangeLog:
                     referencedTableName: player
                     referencedColumnNames: id
                     foreignKeyName: turn_player_id
+                    nullable: false
               - column:
                   name: game_id
                   type: bigint
@@ -137,19 +138,23 @@ databaseChangeLog:
                     referencedTableName: game
                     referencedColumnNames: id
                     foreignKeyName: turn_game_id
+                    nullable: false
               - column:
-                  name: roll_timestamp
+                  name: start_timestamp
                   type: timestamp with time zone
                   constraints:
                     nullable: false
               - column:
+                  name: end_timestamp
+                  type: timestamp with time zone
+              - column:
                   name: outcome
-                  type: smallint
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: develop_card_drawn
-                  type: smallint
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -159,17 +164,17 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: roads_built
-                  type: smallint
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: colonies_built
-                  type: smallint
+                  type: int
                   constraints:
                     nullable: false
               - column:
                   name: cities_built
-                  type: smallint
+                  type: int
                   constraints:
                     nullable: false
 

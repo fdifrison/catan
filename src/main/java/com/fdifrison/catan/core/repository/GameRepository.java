@@ -12,4 +12,7 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
 
     @EntityGraph(attributePaths = "playerScores")
     Optional<Game> findWithScoreById(long id);
+
+    @EntityGraph(attributePaths = "turns")
+    Optional<Game> findWithTurnsById(Long id);
 }

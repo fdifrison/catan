@@ -32,7 +32,7 @@ public class Turn {
     @Column(name = "end_timestamp")
     private Instant endTimestamp;
 
-    @NotNull @Min(2)
+    @Min(2)
     @Max(12)
     @Column(name = "outcome", nullable = false)
     private int outcome;
@@ -122,8 +122,7 @@ public class Turn {
         return this;
     }
 
-    @NotNull
-    public boolean isDevelopCardPlayed() {
+    @NotNull public boolean isDevelopCardPlayed() {
         return developCardPlayed;
     }
 

@@ -10,6 +10,8 @@ import com.fdifrison.catan.core.repository.GameRepository;
 import jakarta.validation.Valid;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +52,9 @@ public class GameService {
     public void deleteGame(long id) {
         var game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
         gameRepository.deleteById(game.getId());
+    }
+
+    public Page<GameDTO> search(Pageable pageable) {
+        return gameRepository.findAll(pageable).map(GameMapper.INSTANCE::toDto);
     }
 }

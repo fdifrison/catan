@@ -2,18 +2,18 @@ package com.fdifrison.catan.core.repository;
 
 import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.entity.projection.DiceRollsCount;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface TurnRepository extends JpaRepository<Turn, Long> {
 
     @Query(
-            value = """
+            value =
+                    """
                     select new
                     com.fdifrison.catan.core.entity.projection.DiceRollsCount
                     (t.outcome, count(t.outcome))
@@ -24,7 +24,8 @@ public interface TurnRepository extends JpaRepository<Turn, Long> {
     List<DiceRollsCount> findDiceCountByGameId(@Param("gameId") long gameId);
 
     @Query(
-            value = """
+            value =
+                    """
                     select new
                     com.fdifrison.catan.core.entity.projection.DiceRollsCount
                     (t.outcome, count(t.outcome))
@@ -33,5 +34,4 @@ public interface TurnRepository extends JpaRepository<Turn, Long> {
                     order by t.outcome
                     """)
     List<DiceRollsCount> findOverallDiceCountByPlayerId(@Param("playerId") long playerId);
-
 }

@@ -7,10 +7,8 @@ import com.fdifrison.catan.core.service.GameService;
 import com.fdifrison.catan.core.service.PlayerService;
 import com.fdifrison.catan.core.service.StatisticsService;
 import com.fdifrison.catan.core.service.TurnService;
-
 import java.util.List;
 import java.util.Random;
-
 import org.instancio.Instancio;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -27,7 +25,11 @@ public class CatanApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(GameService gameService, PlayerService playerService, TurnService turnService, StatisticsService statisticsService) {
+    CommandLineRunner commandLineRunner(
+            GameService gameService,
+            PlayerService playerService,
+            TurnService turnService,
+            StatisticsService statisticsService) {
         return args -> {
             var p1Id = playerService.newPlayer(Instancio.of(PlayerDTO.class).create());
             var p2Id = playerService.newPlayer(Instancio.of(PlayerDTO.class).create());
@@ -43,14 +45,14 @@ public class CatanApplication {
                     turnService.initTurn(new InitTurnDTO(newGame, p, dice));
                 }
             }
-//            statisticsService.getGameDiceDashboard(newGame);
+            //            statisticsService.getGameDiceDashboard(newGame);
 
             var p1f = new PlayerScoreDTO(p1Id, 3, false, false, 5, 2);
             var p2f = new PlayerScoreDTO(p2Id, 1, false, true, 8, 2);
             var p3f = new PlayerScoreDTO(p3Id, 2, true, false, 12, 2);
             gameService.updateScoreAndEndGame(newGame, List.of(p1f, p2f, p3f));
-//            var gameRanking = gameService.getGameRanking(newGame);
-//            gameRanking.forEach(System.out::println);
+            //            var gameRanking = gameService.getGameRanking(newGame);
+            //            gameRanking.forEach(System.out::println);
         };
     }
 }

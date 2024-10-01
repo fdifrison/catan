@@ -3,8 +3,6 @@ package com.fdifrison.catan.core.dto;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Map.entry;
-
 public class DiceDashboardDTO {
 
     private final Map<Integer, Long> diceCountMap;

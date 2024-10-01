@@ -2,6 +2,8 @@ package com.fdifrison.catan.core.repository;
 
 import com.fdifrison.catan.core.entity.Game;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -15,4 +17,8 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
 
     @EntityGraph(attributePaths = "turns")
     Optional<Game> findWithTurnsById(Long id);
+
+    @EntityGraph(attributePaths = "playerScores")
+    @Override
+    Page<Game> findAll(Pageable pageable);
 }

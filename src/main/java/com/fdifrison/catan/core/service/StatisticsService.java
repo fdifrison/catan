@@ -15,14 +15,16 @@ public class StatisticsService {
 
     public DiceDashboardDTO getGameDiceDashboard(long gameId) {
         var diceDashboard = new DiceDashboardDTO();
-        turnRepository.findDiceCountByGameId(gameId)
+        turnRepository
+                .findDiceCountByGameId(gameId)
                 .forEach(dice -> diceDashboard.getDiceCountMap().replace(dice.outcome(), dice.count()));
         return diceDashboard;
     }
 
     public DiceDashboardDTO getPlayerOverallDiceDashboard(long playerId) {
         var diceDashboard = new DiceDashboardDTO();
-        turnRepository.findOverallDiceCountByPlayerId(playerId)
+        turnRepository
+                .findOverallDiceCountByPlayerId(playerId)
                 .forEach(dice -> diceDashboard.getDiceCountMap().replace(dice.outcome(), dice.count()));
         return diceDashboard;
     }

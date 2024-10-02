@@ -1,6 +1,7 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,17 +14,21 @@ public class Game {
     @Column(name = "id", nullable = false)
     private long id;
 
+    @NotNull @Column(name = "name")
+    private String name;
+
+    @NotNull @Column(name = "number_of_players")
+    private int numberOfPlayers;
+
+    @NotNull @Column(name = "required_victory_points")
+    private int requiredVictoryPoints;
+
     @CreationTimestamp
-    @Column(name = "start_timestamp", nullable = false)
+    @Column(name = "start_timestamp")
     private Instant startTimestamp;
 
     @Column(name = "end_timestamp")
     private Instant endTimestamp;
-
-    @ElementCollection
-    @CollectionTable(name = "player_score", joinColumns = @JoinColumn(name = "game_id"))
-    @OrderBy("startOrder ASC")
-    private List<PlayerScore> playerScores = new ArrayList<>();
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Turn> turns = new ArrayList<>();
@@ -34,6 +39,33 @@ public class Game {
 
     public Game setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public @NotNull String getName() {
+        return name;
+    }
+
+    public Game setName(@NotNull String name) {
+        this.name = name;
+        return this;
+    }
+
+    @NotNull public int getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public Game setNumberOfPlayers(@NotNull int numberOfPlayers) {
+        this.numberOfPlayers = numberOfPlayers;
+        return this;
+    }
+
+    @NotNull public int getRequiredVictoryPoints() {
+        return requiredVictoryPoints;
+    }
+
+    public Game setRequiredVictoryPoints(@NotNull int requiredVictoryPoints) {
+        this.requiredVictoryPoints = requiredVictoryPoints;
         return this;
     }
 
@@ -52,15 +84,6 @@ public class Game {
 
     public Game setEndTimestamp(Instant endTimestamp) {
         this.endTimestamp = endTimestamp;
-        return this;
-    }
-
-    public List<PlayerScore> getPlayerScores() {
-        return playerScores;
-    }
-
-    public Game setPlayerScores(List<PlayerScore> playerScores) {
-        this.playerScores = playerScores;
         return this;
     }
 

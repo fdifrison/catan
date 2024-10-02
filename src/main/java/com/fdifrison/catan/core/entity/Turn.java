@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "turn")
@@ -17,22 +16,17 @@ public class Turn {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id")
-    private Player player;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player_id")
+    private Player player;
 
     @CreationTimestamp
     @Column(name = "start_timestamp", nullable = false)
     private Instant startTimestamp;
 
-    @UpdateTimestamp
-    @Column(name = "end_timestamp")
-    private Instant endTimestamp;
-
-    @Min(2)
     @Max(12)
     @Column(name = "outcome", nullable = false)
     private int outcome;
@@ -41,8 +35,14 @@ public class Turn {
     @Column(name = "develop_card_drawn", nullable = false)
     private int developCardDrawn;
 
-    @NotNull @Column(name = "develop_card_played", nullable = false)
-    private boolean developCardPlayed = false;
+    @NotNull @Column(name = "knight_card_played", nullable = false)
+    private boolean knightCardPlayed = false;
+
+    @NotNull @Column(name = "longest_road", nullable = false)
+    private boolean longestRoad = false;
+
+    @NotNull @Column(name = "largest_army", nullable = false)
+    private boolean largestArmy = false;
 
     @NotNull @Min(0)
     @Column(name = "roads_built", nullable = false)
@@ -65,21 +65,21 @@ public class Turn {
         return this;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Turn setPlayer(Player player) {
-        this.player = player;
-        return this;
-    }
-
     public Game getGame() {
         return game;
     }
 
     public Turn setGame(Game game) {
         this.game = game;
+        return this;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Turn setPlayer(Player player) {
+        this.player = player;
         return this;
     }
 
@@ -92,22 +92,12 @@ public class Turn {
         return this;
     }
 
-    public Instant getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    public Turn setEndTimestamp(Instant endTimestamp) {
-        this.endTimestamp = endTimestamp;
-        return this;
-    }
-
-    @NotNull @Min(2)
     @Max(12)
     public int getOutcome() {
         return outcome;
     }
 
-    public Turn setOutcome(@NotNull @Min(2) @Max(12) int outcome) {
+    public Turn setOutcome(@Max(12) int outcome) {
         this.outcome = outcome;
         return this;
     }
@@ -122,12 +112,30 @@ public class Turn {
         return this;
     }
 
-    @NotNull public boolean isDevelopCardPlayed() {
-        return developCardPlayed;
+    @NotNull public boolean isKnightCardPlayed() {
+        return knightCardPlayed;
     }
 
-    public Turn setDevelopCardPlayed(@NotNull boolean developCardPlayed) {
-        this.developCardPlayed = developCardPlayed;
+    public Turn setKnightCardPlayed(@NotNull boolean knightCardPlayed) {
+        this.knightCardPlayed = knightCardPlayed;
+        return this;
+    }
+
+    @NotNull public boolean isLongestRoad() {
+        return longestRoad;
+    }
+
+    public Turn setLongestRoad(@NotNull boolean longestRoad) {
+        this.longestRoad = longestRoad;
+        return this;
+    }
+
+    @NotNull public boolean isLargestArmy() {
+        return largestArmy;
+    }
+
+    public Turn setLargestArmy(@NotNull boolean largestArmy) {
+        this.largestArmy = largestArmy;
         return this;
     }
 

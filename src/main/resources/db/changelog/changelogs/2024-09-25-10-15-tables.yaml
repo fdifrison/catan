@@ -48,6 +48,21 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number_of_players
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: required_victory_points
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
                   name: start_timestamp
                   type: timestamp with time zone
                   constraints:
@@ -63,12 +78,13 @@ databaseChangeLog:
       author: fdifrison
       changes:
         - createTable:
-            tableName: player_score
+            tableName: player_ranking
             columns:
               - column:
                   name: game_id
                   type: bigint
                   constraints:
+                    primaryKey: true
                     referencedTableName: game
                     referencedColumnNames: id
                     foreignKeyName: player_score_game_id
@@ -84,32 +100,20 @@ databaseChangeLog:
                     unique: true
                     uniqueConstraintName: game_id_player_id_start_order_unique
               - column:
-                  name: start_order
+                  name: plain_score
                   type: int
                   constraints:
                     nullable: false
-                    unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
               - column:
-                  name: longest_road
-                  type: boolean
-                  constraints:
-                    nullable: true
-              - column:
-                  name: largest_army
-                  type: boolean
-                  constraints:
-                    nullable: true
-              - column:
-                  name: score
+                  name: victory_points_drawn
                   type: int
                   constraints:
-                    nullable: true
+                    nullable: false
               - column:
-                  name: victory_points
-                  type: int
+                  name: winner
+                  type: boolean
                   constraints:
-                    nullable: true
+                    nullable: false
 
   - changeSet:
       id: 4
@@ -124,14 +128,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: player_id
-                  type: bigint
-                  constraints:
-                    referencedTableName: player
-                    referencedColumnNames: id
-                    foreignKeyName: turn_player_id
-                    nullable: false
-              - column:
                   name: game_id
                   type: bigint
                   constraints:
@@ -140,13 +136,18 @@ databaseChangeLog:
                     foreignKeyName: turn_game_id
                     nullable: false
               - column:
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: player
+                    referencedColumnNames: id
+                    foreignKeyName: turn_player_id
+                    nullable: false
+              - column:
                   name: start_timestamp
                   type: timestamp with time zone
                   constraints:
                     nullable: false
-              - column:
-                  name: end_timestamp
-                  type: timestamp with time zone
               - column:
                   name: outcome
                   type: int
@@ -158,7 +159,17 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: develop_card_played
+                  name: knight_card_played
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: longest_road
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: largest_army
                   type: boolean
                   constraints:
                     nullable: false

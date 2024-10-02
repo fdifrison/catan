@@ -1,14 +1,13 @@
 package com.fdifrison.catan.core;
 
-import com.fdifrison.catan.core.dto.InitTurnDTO;
+import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.PlayerDTO;
-import com.fdifrison.catan.core.dto.PlayerScoreDTO;
+import com.fdifrison.catan.core.dto.PlayerOrderDTO;
 import com.fdifrison.catan.core.service.GameService;
 import com.fdifrison.catan.core.service.PlayerService;
 import com.fdifrison.catan.core.service.StatisticsService;
 import com.fdifrison.catan.core.service.TurnService;
 import java.util.List;
-import java.util.Random;
 import net.datafaker.Faker;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -34,60 +33,79 @@ public class CatanApplication {
             var faker = new Faker();
 
             var p1 = new PlayerDTO(
-                    null,
-                    faker.bigBangTheory().character(),
+                    1,
+                    faker.pokemon().name(),
                     faker.name().firstName().toLowerCase() + "@email.com",
                     faker.avatar().image(),
                     false);
             var p2 = new PlayerDTO(
-                    null,
-                    faker.bigBangTheory().character(),
+                    2,
+                    faker.pokemon().name(),
                     faker.name().firstName().toLowerCase() + "@email.com",
                     faker.avatar().image(),
                     false);
             var p3 = new PlayerDTO(
-                    null,
-                    faker.bigBangTheory().character(),
+                    3,
+                    faker.pokemon().name(),
+                    faker.name().firstName().toLowerCase() + "@email.com",
+                    faker.avatar().image(),
+                    false);
+            var p4 = new PlayerDTO(
+                    4,
+                    faker.pokemon().name(),
+                    faker.name().firstName().toLowerCase() + "@email.com",
+                    faker.avatar().image(),
+                    false);
+            var p5 = new PlayerDTO(
+                    5,
+                    faker.pokemon().name(),
                     faker.name().firstName().toLowerCase() + "@email.com",
                     faker.avatar().image(),
                     false);
             var p1Id = playerService.newPlayer(p1);
             var p2Id = playerService.newPlayer(p2);
             var p3Id = playerService.newPlayer(p3);
-            var p1s = new PlayerScoreDTO(p1Id, 3);
-            var p2s = new PlayerScoreDTO(p2Id, 1);
-            var p3s = new PlayerScoreDTO(p3Id, 2);
-            var newGame = gameService.createNewGame(List.of(p1s, p2s, p3s));
-            Random random = new Random();
-            for (Long p : List.of(p1Id, p2Id, p3Id)) {
-                for (int i = 0; i < 25; i++) {
-                    var dice = faker.random().nextInt(2, 12);
-                    turnService.initTurn(new InitTurnDTO(newGame, p, dice));
-                }
-            }
+            var p4Id = playerService.newPlayer(p4);
+            var p5Id = playerService.newPlayer(p5);
 
-            var p1f = new PlayerScoreDTO(
-                    p1Id,
-                    3,
-                    faker.bool().bool(),
-                    faker.bool().bool(),
-                    faker.random().nextInt(3, 14),
-                    faker.random().nextInt(0, 3));
-            var p2f = new PlayerScoreDTO(
-                    p2Id,
-                    1,
-                    faker.bool().bool(),
-                    faker.bool().bool(),
-                    faker.random().nextInt(3, 14),
-                    faker.random().nextInt(0, 3));
-            var p3f = new PlayerScoreDTO(
-                    p3Id,
-                    2,
-                    faker.bool().bool(),
-                    faker.bool().bool(),
-                    faker.random().nextInt(3, 14),
-                    faker.random().nextInt(0, 3));
-            gameService.updateScoreAndEndGame(newGame, List.of(p1f, p2f, p3f));
+            var po1 = new PlayerOrderDTO(1, p1Id);
+            var po2 = new PlayerOrderDTO(2, p2Id);
+            var po3 = new PlayerOrderDTO(3, p3Id);
+            var po4 = new PlayerOrderDTO(4, p4Id);
+            var po5 = new PlayerOrderDTO(5, p5Id);
+
+            var newGame = gameService.createGame(
+                    new GameSetupDTO(faker.book().title(), 14, List.of(po1, po2, po3, po4, po5)));
+            //            Random random = new Random();
+            //            for (Long p : List.of(p1Id, p2Id, p3Id)) {
+            //                for (int i = 0; i < 25; i++) {
+            //                    var dice = faker.random().nextInt(2, 12);
+            //                    turnService.initTurn(new InitTurnDTO(newGame, p, dice));
+            //                }
+            //            }
+            //
+            //            var p1f = new PlayerScoreDTO(
+            //                    p1Id,
+            //                    3,
+            //                    faker.bool().bool(),
+            //                    faker.bool().bool(),
+            //                    faker.random().nextInt(3, 14),
+            //                    faker.random().nextInt(0, 3));
+            //            var p2f = new PlayerScoreDTO(
+            //                    p2Id,
+            //                    1,
+            //                    faker.bool().bool(),
+            //                    faker.bool().bool(),
+            //                    faker.random().nextInt(3, 14),
+            //                    faker.random().nextInt(0, 3));
+            //            var p3f = new PlayerScoreDTO(
+            //                    p3Id,
+            //                    2,
+            //                    faker.bool().bool(),
+            //                    faker.bool().bool(),
+            //                    faker.random().nextInt(3, 14),
+            //                    faker.random().nextInt(0, 3));
+            //            gameService.updateScoreAndEndGame(newGame, List.of(p1f, p2f, p3f));
 
             //            statisticsService.getGameDiceDashboard(newGame);
             //            var gameRanking = gameService.getGameRanking(newGame);

@@ -1,17 +1,16 @@
 package com.fdifrison.catan.core.service;
 
-import com.fdifrison.catan.core.dto.GameDTO;
-import com.fdifrison.catan.core.dto.PlayerScoreDTO;
+import com.fdifrison.catan.core.dto.GameSetupDTO;
+import com.fdifrison.catan.core.dto.GameStateDTO;
+import com.fdifrison.catan.core.dto.PlayerOrderDTO;
 import com.fdifrison.catan.core.dto.mapper.GameMapper;
-import com.fdifrison.catan.core.dto.mapper.PlayerScoreMapper;
 import com.fdifrison.catan.core.entity.Game;
-import com.fdifrison.catan.core.exception.GameNotFoundException;
+import com.fdifrison.catan.core.entity.Player;
+import com.fdifrison.catan.core.entity.Turn;
+import com.fdifrison.catan.core.exception.GameMalformedException;
 import com.fdifrison.catan.core.repository.GameRepository;
-import jakarta.validation.Valid;
-import java.time.Instant;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,42 +18,47 @@ import org.springframework.transaction.annotation.Transactional;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final PlayerService playerService;
 
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, PlayerService playerService) {
         this.gameRepository = gameRepository;
+        this.playerService = playerService;
     }
 
     @Transactional
-    public Long createNewGame(@Valid List<PlayerScoreDTO> players) {
-        var playerList = players.stream()
-                .distinct()
-                .map(PlayerScoreMapper.INSTANCE::toEntity)
-                .toList();
-        return gameRepository.save(new Game().setPlayerScores(playerList)).getId();
+    public long createGame(GameSetupDTO gameSetup) {
+        var game = GameMapper.INSTANCE.initEntity(gameSetup);
+        var savedGame = gameRepository.save(game);
+        parsePlayers(gameSetup.players()).forEachOrdered(player -> {
+            var turn = createTurn(player, game);
+            savedGame.addTurn(turn);
+        });
+        savedGame.setNumberOfPlayers(savedGame.getTurns().size());
+        return savedGame.getId();
     }
 
-    @Transactional
-    public GameDTO updateScoreAndEndGame(long id, @Valid List<PlayerScoreDTO> players) {
-        var game = gameRepository.findWithScoreById(id).orElseThrow(GameNotFoundException::new);
-        var playerScoreList =
-                players.stream().map(PlayerScoreMapper.INSTANCE::toEntity).toList();
-        game.setPlayerScores(playerScoreList).setEndTimestamp(Instant.now());
-        return GameMapper.INSTANCE.toDto(game);
+    private Turn createTurn(Player player, Game game) {
+        return new Turn()
+                .setGame(game)
+                .setPlayer(player)
+                .setOutcome(0)
+                .setDevelopCardDrawn(0)
+                .setKnightCardPlayed(false)
+                .setLongestRoad(false)
+                .setLargestArmy(false)
+                .setRoadsBuilt(2)
+                .setColoniesBuilt(2)
+                .setCitiesBuilt(0);
     }
 
-    public List<PlayerScoreDTO> getGameRanking(long id) {
-        var game = gameRepository.findWithScoreById(id).orElseThrow(GameNotFoundException::new);
-        return game.getPlayerScores().stream()
-                .map(PlayerScoreMapper.INSTANCE::toDto)
-                .toList();
+    private Stream<Player> parsePlayers(List<PlayerOrderDTO> players) {
+        if (players.stream().distinct().count() < 2) {
+            throw new GameMalformedException("Not enough player, min 2 required");
+        }
+        return players.stream().sorted().map(PlayerOrderDTO::getPlayerId).map(playerService::getPlayer);
     }
 
-    public void deleteGame(long id) {
-        var game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
-        gameRepository.deleteById(game.getId());
-    }
-
-    public Page<GameDTO> search(Pageable pageable) {
-        return gameRepository.findAll(pageable).map(GameMapper.INSTANCE::toDto);
+    public GameStateDTO getGameStatus(long gameId) {
+        return null;
     }
 }

@@ -28,7 +28,7 @@ public class PlayerController {
 
     @GetMapping("{id}")
     public PlayerDTO getPlayer(@PathVariable long id) {
-        return playerService.getPlayer(id);
+        return playerService.getPlayerDTO(id);
     }
 
     @PutMapping("{id}")

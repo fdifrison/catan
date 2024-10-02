@@ -2,6 +2,7 @@ package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.PlayerDTO;
 import com.fdifrison.catan.core.dto.mapper.PlayerMapper;
+import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.exception.PlayerNotFoundException;
 import com.fdifrison.catan.core.filter.PlayerFilter;
 import com.fdifrison.catan.core.repository.PlayerRepository;
@@ -25,9 +26,12 @@ public class PlayerService {
         return playerRepository.save(entity).getId();
     }
 
-    public PlayerDTO getPlayer(long id) {
-        var player = playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
-        return PlayerMapper.INSTANCE.toDto(player);
+    public PlayerDTO getPlayerDTO(long id) {
+        return PlayerMapper.INSTANCE.toDto(getPlayer(id));
+    }
+
+    protected Player getPlayer(long id) {
+        return playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
     }
 
     @Transactional

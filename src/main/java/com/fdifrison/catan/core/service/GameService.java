@@ -1,13 +1,12 @@
 package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.GameSetupDTO;
-import com.fdifrison.catan.core.dto.GameStateDTO;
-import com.fdifrison.catan.core.dto.PlayerOrderDTO;
 import com.fdifrison.catan.core.dto.mapper.GameMapper;
+import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.Game;
+import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.entity.Turn;
-import com.fdifrison.catan.core.exception.GameMalformedException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import java.util.List;
 import java.util.stream.Stream;
@@ -19,24 +18,39 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerService playerService;
+    private final GamePlayerService gamePlayerService;
     private final GameMapper gameMapper;
+    private final GamePlayerMapper gamePlayerMapper;
 
-    public GameService(GameRepository gameRepository, PlayerService playerService, GameMapper gameMapper) {
+    public GameService(
+            GameRepository gameRepository,
+            PlayerService playerService,
+            GamePlayerService gamePlayerService,
+            GameMapper gameMapper,
+            GamePlayerMapper gamePlayerMapper) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
+        this.gamePlayerService = gamePlayerService;
         this.gameMapper = gameMapper;
+        this.gamePlayerMapper = gamePlayerMapper;
     }
 
     @Transactional
     public long createGame(GameSetupDTO gameSetup) {
-        var game = gameMapper.initEntity(gameSetup);
-        var savedGame = gameRepository.save(game);
-        parsePlayers(gameSetup.players()).forEachOrdered(player -> {
-            var turn = createTurn(player, game);
-            savedGame.addTurn(turn);
-        });
-        savedGame.setNumberOfPlayers(savedGame.getTurns().size());
+        var game = gameMapper.initEntity(gameSetup.gameInfo());
+        var savedGame = gameRepository.saveAndFlush(game);
+        parsePlayers(gameSetup.playersInfo(), savedGame.getId())
+                .map(p -> createTurn(p, game))
+                .forEach(savedGame::addTurn);
         return savedGame.getId();
+    }
+
+    private Stream<Player> parsePlayers(List<GameSetupDTO.GamePlayerInfoDTO> players, long gameId) {
+        return gamePlayerMapper.updateDto(players, gameId).stream()
+                .sorted()
+                .map(gamePlayerService::createGamePlayer)
+                .map(GamePlayer::getPlayerId)
+                .map(playerService::getPlayer);
     }
 
     private Turn createTurn(Player player, Game game) {
@@ -51,16 +65,5 @@ public class GameService {
                 .setRoadsBuilt(2)
                 .setColoniesBuilt(2)
                 .setCitiesBuilt(0);
-    }
-
-    private Stream<Player> parsePlayers(List<PlayerOrderDTO> players) {
-        if (players.stream().distinct().count() < 2) {
-            throw new GameMalformedException("Not enough player, min 2 required");
-        }
-        return players.stream().sorted().map(PlayerOrderDTO::getPlayerId).map(playerService::getPlayer);
-    }
-
-    public GameStateDTO getGameStatus(long gameId) {
-        return null;
     }
 }

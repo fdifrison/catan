@@ -23,9 +23,6 @@ public class Turn {
     @JoinColumn(name = "player_id")
     private Player player;
 
-    @NotNull @Column(name = "player_color")
-    private String playerColor;
-
     @CreationTimestamp
     @Column(name = "start_timestamp", nullable = false)
     private Instant startTimestamp;
@@ -83,15 +80,6 @@ public class Turn {
 
     public Turn setPlayer(Player player) {
         this.player = player;
-        return this;
-    }
-
-    public @NotNull String getPlayerColor() {
-        return playerColor;
-    }
-
-    public Turn setPlayerColor(@NotNull String playerColor) {
-        this.playerColor = playerColor;
         return this;
     }
 

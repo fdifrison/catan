@@ -12,6 +12,5 @@ public interface GameMapper {
     @Mapping(target = "startTimestamp", ignore = true)
     @Mapping(target = "endTimestamp", ignore = true)
     @Mapping(target = "turns", ignore = true)
-    @Mapping(target = "numberOfPlayers", ignore = true)
-    Game initEntity(GameSetupDTO gameSetup);
+    Game initEntity(GameSetupDTO.GameInfoDTO gameInfo);
 }

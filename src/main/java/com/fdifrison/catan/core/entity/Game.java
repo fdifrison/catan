@@ -9,13 +9,23 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "game")
 public class Game {
+
+    public enum GameType {
+        STANDARD,
+        SEAFARERS
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
-    @NotNull @Column(name = "name")
-    private String name;
+    @NotNull @Column(name = "game_name")
+    private String gameName;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull @Column(name = "game_type")
+    private GameType gameType;
 
     @NotNull @Column(name = "number_of_players")
     private int numberOfPlayers;
@@ -33,6 +43,9 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Turn> turns = new ArrayList<>();
 
+    @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
+
     public long getId() {
         return id;
     }
@@ -42,12 +55,21 @@ public class Game {
         return this;
     }
 
-    public @NotNull String getName() {
-        return name;
+    public @NotNull String getGameName() {
+        return gameName;
     }
 
-    public Game setName(@NotNull String name) {
-        this.name = name;
+    public Game setGameName(@NotNull String gameName) {
+        this.gameName = gameName;
+        return this;
+    }
+
+    public @NotNull GameType getGameType() {
+        return gameType;
+    }
+
+    public Game setGameType(@NotNull GameType gameType) {
+        this.gameType = gameType;
         return this;
     }
 
@@ -87,10 +109,6 @@ public class Game {
         return this;
     }
 
-    public List<Turn> getTurns() {
-        return turns;
-    }
-
     public Game addTurn(Turn turn) {
         turns.add(turn);
         turn.setGame(this);
@@ -100,5 +118,23 @@ public class Game {
     public void removeTurn(Turn turn) {
         turns.remove(turn);
         turn.setGame(null);
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public Game setTurns(List<Turn> turns) {
+        this.turns = turns;
+        return this;
+    }
+
+    public List<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public Game setGamePlayers(List<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+        return this;
     }
 }

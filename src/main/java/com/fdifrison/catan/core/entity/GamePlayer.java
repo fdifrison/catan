@@ -3,9 +3,9 @@ package com.fdifrison.catan.core.entity;
 import jakarta.persistence.*;
 
 @Entity
-@IdClass(PlayerRankingId.class)
-@Table(name = "player_ranking")
-public class PlayerRanking {
+@IdClass(GamePlayerId.class)
+@Table(name = "game_player")
+public class GamePlayer {
 
     @Id
     @Column(name = "game_id")
@@ -14,6 +14,12 @@ public class PlayerRanking {
     @Id
     @Column(name = "player_id")
     private long playerId;
+
+    @Column(name = "start_order")
+    private int startOrder;
+
+    @Column(name = "player_color")
+    private String playerColor;
 
     @Column(name = "plain_score")
     private int plainScore;
@@ -28,7 +34,7 @@ public class PlayerRanking {
         return gameId;
     }
 
-    public PlayerRanking setGameId(long gameId) {
+    public GamePlayer setGameId(long gameId) {
         this.gameId = gameId;
         return this;
     }
@@ -37,8 +43,26 @@ public class PlayerRanking {
         return playerId;
     }
 
-    public PlayerRanking setPlayerId(long playerId) {
+    public GamePlayer setPlayerId(long playerId) {
         this.playerId = playerId;
+        return this;
+    }
+
+    public int getStartOrder() {
+        return startOrder;
+    }
+
+    public GamePlayer setStartOrder(int startOrder) {
+        this.startOrder = startOrder;
+        return this;
+    }
+
+    public String getPlayerColor() {
+        return playerColor;
+    }
+
+    public GamePlayer setPlayerColor(String playerColor) {
+        this.playerColor = playerColor;
         return this;
     }
 
@@ -46,7 +70,7 @@ public class PlayerRanking {
         return plainScore;
     }
 
-    public PlayerRanking setPlainScore(int plainScore) {
+    public GamePlayer setPlainScore(int plainScore) {
         this.plainScore = plainScore;
         return this;
     }
@@ -55,7 +79,7 @@ public class PlayerRanking {
         return victoryPointsDrawn;
     }
 
-    public PlayerRanking setVictoryPointsDrawn(int victoryPointsDrawn) {
+    public GamePlayer setVictoryPointsDrawn(int victoryPointsDrawn) {
         this.victoryPointsDrawn = victoryPointsDrawn;
         return this;
     }
@@ -64,7 +88,7 @@ public class PlayerRanking {
         return winner;
     }
 
-    public PlayerRanking setWinner(boolean winner) {
+    public GamePlayer setWinner(boolean winner) {
         this.winner = winner;
         return this;
     }

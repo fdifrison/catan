@@ -48,7 +48,12 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: name
+                  name: game_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: game_type
                   type: text
                   constraints:
                     nullable: false
@@ -78,7 +83,7 @@ databaseChangeLog:
       author: fdifrison
       changes:
         - createTable:
-            tableName: player_ranking
+            tableName: game_player
             columns:
               - column:
                   name: game_id
@@ -89,31 +94,48 @@ databaseChangeLog:
                     referencedColumnNames: id
                     foreignKeyName: player_score_game_id
                     unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
                   name: player_id
                   type: bigint
                   constraints:
+                    primaryKey: true
                     referencedTableName: player
                     referencedColumnNames: id
                     foreignKeyName: player_score_player_id
                     unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
+              - column:
+                  name: start_order
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
+              - column:
+                  name: player_color
+                  type: text
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
                   name: plain_score
                   type: int
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: victory_points_drawn
                   type: int
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: winner
                   type: boolean
                   constraints:
-                    nullable: false
+                    nullable: true
 
   - changeSet:
       id: 4
@@ -142,11 +164,6 @@ databaseChangeLog:
                     referencedTableName: player
                     referencedColumnNames: id
                     foreignKeyName: turn_player_id
-                    nullable: false
-              - column:
-                  name: player_color
-                  type: text
-                  constraints:
                     nullable: false
               - column:
                   name: start_timestamp

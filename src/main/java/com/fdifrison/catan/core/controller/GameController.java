@@ -1,9 +1,13 @@
 package com.fdifrison.catan.core.controller;
 
+import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
-import com.fdifrison.catan.core.dto.GameStateDTO;
 import com.fdifrison.catan.core.service.GameService;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +29,8 @@ public class GameController {
         return gameService.createGame(gameSetup);
     }
 
-    @GetMapping("{gameId}")
-    public GameStateDTO getGameStatus(@PathVariable long gameId) {
-        return null;
+    @GetMapping
+    public Page<GameDTO> searchGames(@PageableDefault(sort = "id", size = 5) @ParameterObject Pageable pageable) {
+        return gameService.search(pageable);
     }
 }

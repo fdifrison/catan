@@ -1,5 +1,6 @@
 package com.fdifrison.catan.core.service;
 
+import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.mapper.GameMapper;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
@@ -10,6 +11,8 @@ import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.repository.GameRepository;
 import java.util.List;
 import java.util.stream.Stream;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,5 +68,9 @@ public class GameService {
                 .setRoadsBuilt(2)
                 .setColoniesBuilt(2)
                 .setCitiesBuilt(0);
+    }
+
+    public Page<GameDTO> search(Pageable pageable) {
+        return gameRepository.findAll(pageable).map(gameMapper::toDto);
     }
 }

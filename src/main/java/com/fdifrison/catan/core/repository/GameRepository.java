@@ -18,7 +18,7 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
     @EntityGraph(attributePaths = "turns")
     Optional<Game> findWithTurnsById(Long id);
 
-    @EntityGraph(attributePaths = "playerScores")
+    @EntityGraph(attributePaths = "gamePlayers")
     @Override
     Page<Game> findAll(Pageable pageable);
 }

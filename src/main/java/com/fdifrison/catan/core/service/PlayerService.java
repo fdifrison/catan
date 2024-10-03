@@ -16,18 +16,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final PlayerMapper playerMapper;
 
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, PlayerMapper playerMapper) {
         this.playerRepository = playerRepository;
+        this.playerMapper = playerMapper;
     }
 
     public long newPlayer(PlayerDTO playerDTO) {
-        var entity = PlayerMapper.INSTANCE.toEntity(playerDTO);
+        var entity = playerMapper.toEntity(playerDTO);
         return playerRepository.save(entity).getId();
     }
 
     public PlayerDTO getPlayerDTO(long id) {
-        return PlayerMapper.INSTANCE.toDto(getPlayer(id));
+        return playerMapper.toDto(getPlayer(id));
     }
 
     protected Player getPlayer(long id) {
@@ -37,12 +39,12 @@ public class PlayerService {
     @Transactional
     public void updatePlayer(long id, PlayerDTO playerDTO) {
         var player = playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
-        PlayerMapper.INSTANCE.update(player, playerDTO);
+        playerMapper.update(player, playerDTO);
     }
 
     public Page<PlayerDTO> search(PlayerFilter filter, Pageable pageable) {
         return playerRepository
                 .findAll(new PlayerSpecification(filter), pageable)
-                .map(PlayerMapper.INSTANCE::toDto);
+                .map(playerMapper::toDto);
     }
 }

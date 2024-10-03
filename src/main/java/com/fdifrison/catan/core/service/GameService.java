@@ -19,15 +19,17 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlayerService playerService;
+    private final GameMapper gameMapper;
 
-    public GameService(GameRepository gameRepository, PlayerService playerService) {
+    public GameService(GameRepository gameRepository, PlayerService playerService, GameMapper gameMapper) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
+        this.gameMapper = gameMapper;
     }
 
     @Transactional
     public long createGame(GameSetupDTO gameSetup) {
-        var game = GameMapper.INSTANCE.initEntity(gameSetup);
+        var game = gameMapper.initEntity(gameSetup);
         var savedGame = gameRepository.save(game);
         parsePlayers(gameSetup.players()).forEachOrdered(player -> {
             var turn = createTurn(player, game);

@@ -2,7 +2,7 @@ package com.fdifrison.catan.core;
 
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.PlayerDTO;
-import com.fdifrison.catan.core.dto.PlayerOrderDTO;
+import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.service.GameService;
 import com.fdifrison.catan.core.service.PlayerService;
 import com.fdifrison.catan.core.service.StatisticsService;
@@ -68,15 +68,22 @@ public class CatanApplication {
             var p4Id = playerService.newPlayer(p4);
             var p5Id = playerService.newPlayer(p5);
 
-            var po1 = new PlayerOrderDTO(1, p1Id, faker.color().hex());
-            var po2 = new PlayerOrderDTO(2, p2Id, faker.color().hex());
-            var po3 = new PlayerOrderDTO(3, p3Id, faker.color().hex());
-            var po4 = new PlayerOrderDTO(4, p4Id, faker.color().hex());
-            var po5 = new PlayerOrderDTO(5, p5Id, faker.color().hex());
+            var po1 =
+                    new GameSetupDTO.GamePlayerInfoDTO(1, p1Id, 1, faker.color().hex());
+            var po2 =
+                    new GameSetupDTO.GamePlayerInfoDTO(2, p2Id, 2, faker.color().hex());
+            var po3 =
+                    new GameSetupDTO.GamePlayerInfoDTO(3, p3Id, 3, faker.color().hex());
+            var po4 =
+                    new GameSetupDTO.GamePlayerInfoDTO(4, p4Id, 4, faker.color().hex());
+            var po5 =
+                    new GameSetupDTO.GamePlayerInfoDTO(5, p5Id, 5, faker.color().hex());
 
-            var newGame = gameService.createGame(
-                    new GameSetupDTO(faker.book().title(), 14, List.of(po1, po2, po3, po4, po5)));
-            //            Random random = new Random();
+            var newGame = gameService.createGame(new GameSetupDTO(
+                    new GameSetupDTO.GameInfoDTO(faker.book().title(), Game.GameType.STANDARD, 5, 14),
+                    List.of(po1, po2, po3, po4, po5)));
+
+            System.out.println();
             //            for (Long p : List.of(p1Id, p2Id, p3Id)) {
             //                for (int i = 0; i < 25; i++) {
             //                    var dice = faker.random().nextInt(2, 12);

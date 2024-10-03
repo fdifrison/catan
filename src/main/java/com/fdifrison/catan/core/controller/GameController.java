@@ -27,6 +27,6 @@ public class GameController {
 
     @GetMapping("{gameId}")
     public GameStateDTO getGameStatus(@PathVariable long gameId) {
-        return gameService.getGameStatus(gameId);
+        return null;
     }
 }

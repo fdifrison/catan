@@ -144,6 +144,11 @@ databaseChangeLog:
                     foreignKeyName: turn_player_id
                     nullable: false
               - column:
+                  name: player_color
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
                   name: start_timestamp
                   type: timestamp with time zone
                   constraints:

@@ -68,11 +68,11 @@ public class CatanApplication {
             var p4Id = playerService.newPlayer(p4);
             var p5Id = playerService.newPlayer(p5);
 
-            var po1 = new PlayerOrderDTO(1, p1Id);
-            var po2 = new PlayerOrderDTO(2, p2Id);
-            var po3 = new PlayerOrderDTO(3, p3Id);
-            var po4 = new PlayerOrderDTO(4, p4Id);
-            var po5 = new PlayerOrderDTO(5, p5Id);
+            var po1 = new PlayerOrderDTO(1, p1Id, faker.color().hex());
+            var po2 = new PlayerOrderDTO(2, p2Id, faker.color().hex());
+            var po3 = new PlayerOrderDTO(3, p3Id, faker.color().hex());
+            var po4 = new PlayerOrderDTO(4, p4Id, faker.color().hex());
+            var po5 = new PlayerOrderDTO(5, p5Id, faker.color().hex());
 
             var newGame = gameService.createGame(
                     new GameSetupDTO(faker.book().title(), 14, List.of(po1, po2, po3, po4, po5)));

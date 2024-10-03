@@ -4,10 +4,12 @@ public class PlayerOrderDTO implements Comparable<PlayerOrderDTO> {
 
     int order;
     long playerId;
+    String playerColor;
 
-    public PlayerOrderDTO(int order, long playerId) {
+    public PlayerOrderDTO(int order, long playerId, String playerColor) {
         this.order = order;
         this.playerId = playerId;
+        this.playerColor = playerColor;
     }
 
     @Override
@@ -30,6 +32,15 @@ public class PlayerOrderDTO implements Comparable<PlayerOrderDTO> {
 
     public PlayerOrderDTO setPlayerId(long playerId) {
         this.playerId = playerId;
+        return this;
+    }
+
+    public String getPlayerColor() {
+        return playerColor;
+    }
+
+    public PlayerOrderDTO setPlayerColor(String playerColor) {
+        this.playerColor = playerColor;
         return this;
     }
 }

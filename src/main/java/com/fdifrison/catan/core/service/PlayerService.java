@@ -29,10 +29,10 @@ public class PlayerService {
     }
 
     public PlayerDTO getPlayerDTO(long id) {
-        return playerMapper.toDto(getPlayer(id));
+        return playerMapper.toDto(findPlayerById(id));
     }
 
-    protected Player getPlayer(long id) {
+    protected Player findPlayerById(long id) {
         return playerRepository.findById(id).orElseThrow(PlayerNotFoundException::new);
     }
 

@@ -1,11 +1,8 @@
 package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.DiceDashboardDTO;
-import com.fdifrison.catan.core.entity.projection.PlayerAggregateGameStatistics;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StatisticsService {

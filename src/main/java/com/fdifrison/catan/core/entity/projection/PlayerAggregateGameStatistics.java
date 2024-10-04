@@ -7,6 +7,4 @@ public record PlayerAggregateGameStatistics(
         int coloniesBuilt,
         int citiesBuilt,
         boolean longestRoad,
-        boolean largestArmy
-) {
-}
+        boolean largestArmy) {}

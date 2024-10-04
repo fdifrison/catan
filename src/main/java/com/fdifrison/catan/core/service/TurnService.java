@@ -42,9 +42,7 @@ public class TurnService {
     }
 
     private void validateTurn(TurnDTO turnDTO, Game game) {
-        var playerNotInGame = game
-                .getGamePlayers()
-                .stream()
+        var playerNotInGame = game.getGamePlayers().stream()
                 .map(GamePlayer::getPlayerId)
                 .noneMatch(pId -> pId.equals(turnDTO.playerId()));
         if (playerNotInGame) {

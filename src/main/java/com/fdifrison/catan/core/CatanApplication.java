@@ -7,14 +7,13 @@ import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.service.GameService;
 import com.fdifrison.catan.core.service.PlayerService;
 import com.fdifrison.catan.core.service.StatisticsService;
+import java.util.List;
 import net.datafaker.Faker;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.util.List;
 
 @SpringBootApplication
 public class CatanApplication {
@@ -26,9 +25,7 @@ public class CatanApplication {
 
     @Bean
     CommandLineRunner commandLineRunner(
-            GameService gameService,
-            PlayerService playerService,
-            StatisticsService statisticsService) {
+            GameService gameService, PlayerService playerService, StatisticsService statisticsService) {
         return args -> {
             var faker = new Faker();
 

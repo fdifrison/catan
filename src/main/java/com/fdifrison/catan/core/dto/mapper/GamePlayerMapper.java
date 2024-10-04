@@ -3,10 +3,9 @@ package com.fdifrison.catan.core.dto.mapper;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.entity.GamePlayer;
+import com.fdifrison.catan.core.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.fdifrison.catan.core.entity.Player;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

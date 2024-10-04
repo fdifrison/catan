@@ -27,9 +27,6 @@ public class Game {
     @NotNull @Column(name = "game_type")
     private GameType gameType;
 
-    @NotNull @Column(name = "number_of_players")
-    private int numberOfPlayers;
-
     @NotNull @Column(name = "required_victory_points")
     private int requiredVictoryPoints;
 
@@ -70,15 +67,6 @@ public class Game {
 
     public Game setGameType(@NotNull GameType gameType) {
         this.gameType = gameType;
-        return this;
-    }
-
-    @NotNull public int getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
-
-    public Game setNumberOfPlayers(@NotNull int numberOfPlayers) {
-        this.numberOfPlayers = numberOfPlayers;
         return this;
     }
 

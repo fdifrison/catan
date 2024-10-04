@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificationExecutor<Game> {
 
-    @EntityGraph(attributePaths = "playerScores")
-    Optional<Game> findWithScoreById(long id);
+    @EntityGraph(attributePaths = "gamePlayers")
+    Optional<Game> findWithGamePlayersById(long id);
 
     @EntityGraph(attributePaths = "turns")
     Optional<Game> findWithTurnsById(Long id);

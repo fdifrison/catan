@@ -1,8 +1,11 @@
 package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.DiceDashboardDTO;
+import com.fdifrison.catan.core.entity.projection.PlayerAggregateGameStatistics;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StatisticsService {
@@ -27,5 +30,10 @@ public class StatisticsService {
                 .findOverallDiceCountByPlayerId(playerId)
                 .forEach(dice -> diceDashboard.getDiceCountMap().replace(dice.outcome(), dice.count()));
         return diceDashboard;
+    }
+
+    public void dummy(long gameId) {
+        var playerAggregateGameStatisticsByGameId = turnRepository.findPlayerAggregateGameStatisticsByGameId(gameId);
+        System.out.println();
     }
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @IdClass(GamePlayerId.class)
 @Table(name = "game_player")
-public class GamePlayer {
+public class GamePlayer implements Comparable<GamePlayer> {
 
     @Id
     @Column(name = "game_id")
@@ -91,5 +91,10 @@ public class GamePlayer {
     public GamePlayer setWinner(boolean winner) {
         this.winner = winner;
         return this;
+    }
+
+    @Override
+    public int compareTo(GamePlayer o) {
+        return Integer.compare(this.startOrder, o.startOrder);
     }
 }

@@ -14,15 +14,20 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
 @Schema(description = "Representation of a game and its players")
 public record GameDTO(
-        @JsonProperty(access = READ_ONLY)
-        long id,
-        @NotNull String gameName,
-        @NotNull Game.GameType gameType,
-        int turnNumber,
-        @Min(8) int requiredVictoryPoints,
-        @NotNull Instant startTimestamp,
-        @Nullable Instant endTimestamp,
+        @NotNull GameInfoDTO gameInfo,
         @NotNull List<GamePlayerDTO> gamePlayers) {
+
+    public record GameInfoDTO(
+            @JsonProperty(access = READ_ONLY)
+            long id,
+            @NotNull String gameName,
+            @NotNull Game.GameType gameType,
+            int turnNumber,
+            @Min(8) int requiredVictoryPoints,
+            @NotNull Instant startTimestamp,
+            @Nullable Instant endTimestamp) {
+
+    }
 
     @Schema(description = "Player state relative to a specific game")
     public record GamePlayerDTO(
@@ -36,11 +41,11 @@ public record GameDTO(
 
             @Min(0) int developCardDrawn,
             @Min(0) int knightCardPlayed,
-            boolean longestRoad,
-            boolean largestArmy,
             @Min(2) int roadsBuilt,
             @Min(2) int coloniesBuilt,
             @Min(0) int citiesBuilt,
+            boolean longestRoad,
+            boolean largestArmy,
 
             @Min(0) int plainScore,
             int victoryPointsDrawn,

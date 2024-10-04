@@ -3,10 +3,15 @@ package com.fdifrison.catan.core.dto.mapper;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.entity.Game;
+import com.fdifrison.catan.core.entity.GamePlayer;
+import com.fdifrison.catan.core.entity.Player;
+import jakarta.validation.constraints.NotNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper
+import java.util.List;
+
+@Mapper(uses = GamePlayerMapper.class)
 public interface GameMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -15,5 +20,6 @@ public interface GameMapper {
     @Mapping(target = "turns", ignore = true)
     Game initEntity(GameSetupDTO.GameInfoDTO gameInfo);
 
-    GameDTO toDto(Game game);
+    GameDTO.GameInfoDTO toDto(Game game);
+
 }

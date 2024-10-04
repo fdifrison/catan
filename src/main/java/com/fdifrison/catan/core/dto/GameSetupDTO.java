@@ -11,11 +11,15 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Schema(description = "Required info to setup a new game")
-public record GameSetupDTO(GameInfoDTO gameInfo, @Min(2) List<GamePlayerInfoDTO> playersInfo) {
+public record GameSetupDTO(
+        @NotNull GameInfoDTO gameInfo,
+        @Min(2) List<GamePlayerInfoDTO> playersInfo) {
 
     @Schema(description = "Basic info about the game")
     public record GameInfoDTO(
-            String gameName, Game.GameType gameType, @Min(2) @Max(6) int numberOfPlayers, int requiredVictoryPoints) {}
+            @NotNull String gameName,
+            @NotNull Game.GameType gameType,
+            @Min(8) int requiredVictoryPoints) {}
 
     @Schema(description = "Basic info about the players participating to the game")
     public record GamePlayerInfoDTO(

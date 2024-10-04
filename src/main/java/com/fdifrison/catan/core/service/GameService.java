@@ -1,6 +1,5 @@
 package com.fdifrison.catan.core.service;
 
-import com.fdifrison.catan.core.dto.DiceDashboardDTO;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.TurnDTO;
@@ -9,18 +8,16 @@ import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
-import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class GameService {
@@ -36,9 +33,11 @@ public class GameService {
     public GameService(
             GameRepository gameRepository,
             PlayerService playerService,
-            GamePlayerService gamePlayerService, TurnService turnService,
+            GamePlayerService gamePlayerService,
+            TurnService turnService,
             GameMapper gameMapper,
-            GamePlayerMapper gamePlayerMapper, StatisticsService statisticsService) {
+            GamePlayerMapper gamePlayerMapper,
+            StatisticsService statisticsService) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
         this.gamePlayerService = gamePlayerService;
@@ -68,7 +67,6 @@ public class GameService {
 
     public Page<GameDTO.GameInfoDTO> search(Pageable pageable) {
         return gameRepository.findAll(pageable).map(gameMapper::toDto);
-
     }
 
     protected Game findGameById(long id) {
@@ -83,18 +81,12 @@ public class GameService {
     }
 
     private List<GameDTO.GamePlayerDTO> getGamePlayerDTOS(Game game) {
-        var gamePlayers = game.getGamePlayers()
-                .stream()
-                .sorted().toList();
-        var players = gamePlayers
-                .stream()
+        var gamePlayers = game.getGamePlayers().stream().sorted().toList();
+        var players = gamePlayers.stream()
                 .map(GamePlayer::getPlayerId)
                 .map(playerService::findPlayerById)
                 .toList();
-        return StreamUtils.zip(
-                        gamePlayers.stream(),
-                        players.stream(),
-                        gamePlayerMapper::toDto)
+        return StreamUtils.zip(gamePlayers.stream(), players.stream(), gamePlayerMapper::toDto)
                 .toList();
     }
 
@@ -104,6 +96,4 @@ public class GameService {
         var turn = turnService.newTurn(turnDTO, game);
         game.addTurn(turn);
     }
-
-
 }

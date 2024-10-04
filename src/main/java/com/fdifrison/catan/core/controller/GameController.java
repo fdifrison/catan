@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,8 +36,8 @@ public class GameController {
 
     @GetMapping
     public Page<GameDTO.GameInfoDTO> searchGames(
-            @PageableDefault(sort = "startTimestamp", direction = Sort.Direction.DESC, size = 5)
-            @ParameterObject Pageable pageable) {
+            @PageableDefault(sort = "startTimestamp", direction = Sort.Direction.DESC, size = 5) @ParameterObject
+                    Pageable pageable) {
         return gameService.search(pageable);
     }
 

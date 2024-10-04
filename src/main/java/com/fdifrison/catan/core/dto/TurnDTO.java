@@ -13,8 +13,6 @@ public record TurnDTO(
         boolean knightCardPlayed,
         boolean longestRoad,
         boolean largestArmy,
-        @Min(0)int roadsBuilt,
-        @Min(0)int coloniesBuilt,
-        @Min(0)int citiesBuilt
-) {
-}
+        @Min(0) int roadsBuilt,
+        @Min(0) int coloniesBuilt,
+        @Min(0) int citiesBuilt) {}

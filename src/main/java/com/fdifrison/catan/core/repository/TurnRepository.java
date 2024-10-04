@@ -2,10 +2,8 @@ package com.fdifrison.catan.core.repository;
 
 import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.entity.projection.DiceRollsCount;
-import java.util.List;
-
 import com.fdifrison.catan.core.entity.projection.IPlayerAggregateGameStatistics;
-import com.fdifrison.catan.core.entity.projection.PlayerAggregateGameStatistics;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,8 +36,9 @@ public interface TurnRepository extends JpaRepository<Turn, Long> {
                     """)
     List<DiceRollsCount> findOverallDiceCountByPlayerId(@Param("playerId") long playerId);
 
-
-    @Query(value = """
+    @Query(
+            value =
+                    """
             with last_true as (
                 select
                     max(case when t1.longest_road = true then t1.id else 0 end) as last_longest_road,
@@ -69,6 +68,7 @@ public interface TurnRepository extends JpaRepository<Turn, Long> {
             cross join last_true lt
             where t.game_id = :gameId
             group by p.id, lt.last_longest_road, lt.last_largest_army
-            """, nativeQuery = true)
+            """,
+            nativeQuery = true)
     List<IPlayerAggregateGameStatistics> findPlayerAggregateGameStatisticsByGameId(@Param("gameId") long gameId);
 }

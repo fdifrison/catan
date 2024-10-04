@@ -8,5 +8,4 @@ import org.mapstruct.Mapper;
 public interface TurnMapper {
 
     Turn toEntity(TurnDTO turnDTO);
-
 }

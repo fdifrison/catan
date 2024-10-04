@@ -7,7 +7,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
 public class PlayerSpecification implements Specification<Player> {
@@ -35,8 +34,7 @@ public class PlayerSpecification implements Specification<Player> {
     }
 
     private static Specification<Player> playerDeleted(boolean deleted) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(Player_.deleted), deleted);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Player_.deleted), deleted);
     }
 
     @Override

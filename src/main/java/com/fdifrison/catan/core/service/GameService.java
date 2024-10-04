@@ -1,20 +1,26 @@
 package com.fdifrison.catan.core.service;
 
+import com.fdifrison.catan.core.dto.DiceDashboardDTO;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
+import com.fdifrison.catan.core.dto.TurnDTO;
 import com.fdifrison.catan.core.dto.mapper.GameMapper;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.entity.Turn;
+import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
-import java.util.List;
-import java.util.stream.Stream;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class GameService {
@@ -22,20 +28,24 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlayerService playerService;
     private final GamePlayerService gamePlayerService;
+    private final TurnService turnService;
     private final GameMapper gameMapper;
     private final GamePlayerMapper gamePlayerMapper;
+    private final StatisticsService statisticsService;
 
     public GameService(
             GameRepository gameRepository,
             PlayerService playerService,
-            GamePlayerService gamePlayerService,
+            GamePlayerService gamePlayerService, TurnService turnService,
             GameMapper gameMapper,
-            GamePlayerMapper gamePlayerMapper) {
+            GamePlayerMapper gamePlayerMapper, StatisticsService statisticsService) {
         this.gameRepository = gameRepository;
         this.playerService = playerService;
         this.gamePlayerService = gamePlayerService;
+        this.turnService = turnService;
         this.gameMapper = gameMapper;
         this.gamePlayerMapper = gamePlayerMapper;
+        this.statisticsService = statisticsService;
     }
 
     @Transactional
@@ -43,7 +53,7 @@ public class GameService {
         var game = gameMapper.initEntity(gameSetup.gameInfo());
         var savedGame = gameRepository.saveAndFlush(game);
         parsePlayers(gameSetup.playersInfo(), savedGame.getId())
-                .map(p -> createTurn(p, game))
+                .map(p -> turnService.createFirstTurn(p, game))
                 .forEach(savedGame::addTurn);
         return savedGame.getId();
     }
@@ -53,24 +63,47 @@ public class GameService {
                 .sorted()
                 .map(gamePlayerService::createGamePlayer)
                 .map(GamePlayer::getPlayerId)
-                .map(playerService::getPlayer);
+                .map(playerService::findPlayerById);
     }
 
-    private Turn createTurn(Player player, Game game) {
-        return new Turn()
-                .setGame(game)
-                .setPlayer(player)
-                .setOutcome(0)
-                .setDevelopCardDrawn(0)
-                .setKnightCardPlayed(false)
-                .setLongestRoad(false)
-                .setLargestArmy(false)
-                .setRoadsBuilt(2)
-                .setColoniesBuilt(2)
-                .setCitiesBuilt(0);
-    }
-
-    public Page<GameDTO> search(Pageable pageable) {
+    public Page<GameDTO.GameInfoDTO> search(Pageable pageable) {
         return gameRepository.findAll(pageable).map(gameMapper::toDto);
+
     }
+
+    protected Game findGameById(long id) {
+        return gameRepository.findWithGamePlayersById(id).orElseThrow(GameNotFoundException::new);
+    }
+
+    public GameDTO getGameDTOByGameId(long id) {
+        var game = findGameById(id);
+        var gameInfoDTO = gameMapper.toDto(game); // TODO add count on turns for turnNumber
+        var gamePlayerDTOs = getGamePlayerDTOS(game);
+        return new GameDTO(gameInfoDTO, gamePlayerDTOs);
+    }
+
+    private List<GameDTO.GamePlayerDTO> getGamePlayerDTOS(Game game) {
+        var gamePlayers = game.getGamePlayers()
+                .stream()
+                .sorted().toList();
+        var players = gamePlayers
+                .stream()
+                .map(GamePlayer::getPlayerId)
+                .map(playerService::findPlayerById)
+                .toList();
+        return StreamUtils.zip(
+                        gamePlayers.stream(),
+                        players.stream(),
+                        gamePlayerMapper::toDto)
+                .toList();
+    }
+
+    @Transactional
+    public void newTurn(long id, @Valid TurnDTO turnDTO) {
+        var game = findGameById(id);
+        var turn = turnService.newTurn(turnDTO, game);
+        game.addTurn(turn);
+    }
+
+
 }

@@ -58,11 +58,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: number_of_players
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
                   name: required_victory_points
                   type: int
                   constraints:

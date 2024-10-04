@@ -1,3 +1,4 @@
 package com.fdifrison.catan.core.filter;
 
-public record PlayerFilter(String username, String email) {}
+public record PlayerFilter(String username, String email, boolean deleted) {
+}

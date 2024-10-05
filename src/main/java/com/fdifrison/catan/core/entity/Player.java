@@ -25,20 +25,6 @@ public class Player {
     @Column(name = "deleted")
     private boolean deleted;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Turn> turns = new ArrayList<>();
-
-    public Player addTurn(Turn turn) {
-        this.turns.add(turn);
-        turn.setPlayer(this);
-        return this;
-    }
-
-    public void removeTurn(Turn turn) {
-        this.turns.remove(turn);
-        turn.setPlayer(null);
-    }
-
     public long getId() {
         return id;
     }

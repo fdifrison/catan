@@ -1,5 +1,6 @@
 package com.fdifrison.catan.core;
 
+import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.PlayerDTO;
 import com.fdifrison.catan.core.dto.TurnDTO;
@@ -66,21 +67,27 @@ public class CatanApplication {
             var p5Id = playerService.newPlayer(p5);
 
             var po1 =
-                    new GameSetupDTO.GamePlayerInfoDTO(1, p1Id, 1, faker.color().hex());
+                    new GameSetupDTO.GamePlayerInfoDTO(1, p1Id, 3, faker.color().hex());
             var po2 =
-                    new GameSetupDTO.GamePlayerInfoDTO(2, p2Id, 2, faker.color().hex());
+                    new GameSetupDTO.GamePlayerInfoDTO(2, p2Id, 5, faker.color().hex());
             var po3 =
-                    new GameSetupDTO.GamePlayerInfoDTO(3, p3Id, 3, faker.color().hex());
+                    new GameSetupDTO.GamePlayerInfoDTO(3, p3Id, 1, faker.color().hex());
             var po4 =
                     new GameSetupDTO.GamePlayerInfoDTO(4, p4Id, 4, faker.color().hex());
             var po5 =
-                    new GameSetupDTO.GamePlayerInfoDTO(5, p5Id, 5, faker.color().hex());
+                    new GameSetupDTO.GamePlayerInfoDTO(5, p5Id, 2, faker.color().hex());
 
             var gameId = gameService.createGame(new GameSetupDTO(
                     new GameSetupDTO.GameInfoDTO(faker.book().title(), Game.GameType.STANDARD, 14),
                     List.of(po1, po2, po3, po4, po5)));
 
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < 10; i++) {
+                GameDTO gameDTO = gameService.getGameDTOByGameId(gameId);
+                int max = gameDTO.gamePlayers().stream()
+                        .mapToInt(GameDTO.GamePlayerDTO::plainScore)
+                        .max()
+                        .getAsInt();
+                if (max > gameDTO.gameInfo().requiredVictoryPoints()) break;
                 for (Long p : List.of(p1Id, p2Id, p3Id, p4Id, p5Id)) {
                     var turnDTO = new TurnDTO(
                             gameId,
@@ -96,7 +103,11 @@ public class CatanApplication {
                     gameService.newTurn(gameId, turnDTO);
                 }
             }
-            statisticsService.dummy(gameId);
+            GameDTO gameDTO = gameService.getGameDTOByGameId(gameId);
+
+            // set winner for the player which has the most points
+            gameService.endGame(gameId, gameDTO.gamePlayers());
+            System.out.println();
         };
     }
 }

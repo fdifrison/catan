@@ -4,10 +4,9 @@ import com.fdifrison.catan.core.dto.DiceDashboardDTO;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.repository.TurnRepository;
+import java.util.List;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StatisticsService {
@@ -36,12 +35,11 @@ public class StatisticsService {
         return diceDashboard;
     }
 
-    public List<GameDTO.GamePlayerDTO> computeGamePlayerStatistics(long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
+    public List<GameDTO.GamePlayerDTO> computeGamePlayerStatistics(
+            long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
         var statistics = turnRepository.computeGamePlayerStatistics(gameId);
         return StreamUtils.zip(
-                        gamePlayers.stream().sorted(),
-                        statistics.stream(),
-                        gamePlayerMapper::updateDtoWithStatistics)
+                        gamePlayers.stream().sorted(), statistics.stream(), gamePlayerMapper::updateDtoWithStatistics)
                 .map(this::computePlayerScore)
                 .toList();
     }
@@ -50,7 +48,6 @@ public class StatisticsService {
         var score = player.citiesBuilt() * 2 + (player.coloniesBuilt() - player.citiesBuilt());
         int scoreWithBonus = player.longestRoad() || player.largestArmy() ? score + 2 : score;
         return gamePlayerMapper.updateDtoWithScore(player, scoreWithBonus);
-
     }
 
     // remove the positioning initial turns from count

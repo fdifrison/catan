@@ -3,9 +3,9 @@ package com.fdifrison.catan.core.controller;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.TurnDTO;
-import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.service.GameService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("game")

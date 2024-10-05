@@ -10,12 +10,9 @@ import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
-import jakarta.validation.Valid;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.StreamUtils;
@@ -69,9 +66,12 @@ public class GameService {
     }
 
     public Page<GameDTO.GameInfoDTO> search(Pageable pageable) {
-        return gameRepository.findAll(pageable)
+        return gameRepository
+                .findAll(pageable)
                 .map(game -> gameMapper.toDto(
-                        game, statisticsService.countTurns(game.getId(), game.getGamePlayers().size())));
+                        game,
+                        statisticsService.countTurns(
+                                game.getId(), game.getGamePlayers().size())));
     }
 
     protected Game findGameById(long id) {
@@ -80,8 +80,10 @@ public class GameService {
 
     public GameDTO getGameDTOByGameId(long id) {
         var game = findGameById(id);
-        var gameInfoDTO = gameMapper.toDto(game, statisticsService.countTurns(id, game.getGamePlayers().size()));
-        var gamePlayerDTOs = statisticsService.computeGamePlayerStatistics(id, getGamePlayerDTOS(game.getGamePlayers()));
+        var gameInfoDTO = gameMapper.toDto(
+                game, statisticsService.countTurns(id, game.getGamePlayers().size()));
+        var gamePlayerDTOs =
+                statisticsService.computeGamePlayerStatistics(id, getGamePlayerDTOS(game.getGamePlayers()));
         return new GameDTO(gameInfoDTO, gamePlayerDTOs);
     }
 
@@ -105,11 +107,11 @@ public class GameService {
     public void endGame(long id, List<GameDTO.GamePlayerDTO> players) {
         Game game = findGameById(id).setEndTimestamp(Instant.now());
         game.getGamePlayers().forEach(gamePlayer -> {
-                    var matchByPlayerId = players.stream()
-                            .filter(player -> player.playerId() == gamePlayer.getPlayerId())
-                            .toList()
-                            .getFirst();
-                    gamePlayerMapper.updateEntity(gamePlayer, matchByPlayerId);
-                });
+            var matchByPlayerId = players.stream()
+                    .filter(player -> player.playerId() == gamePlayer.getPlayerId())
+                    .toList()
+                    .getFirst();
+            gamePlayerMapper.updateEntity(gamePlayer, matchByPlayerId);
+        });
     }
 }

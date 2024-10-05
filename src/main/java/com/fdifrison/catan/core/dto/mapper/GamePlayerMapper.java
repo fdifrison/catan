@@ -4,10 +4,9 @@ import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
+import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -58,6 +57,4 @@ public interface GamePlayerMapper {
 
     @Mapping(target = "plainScore", source = "score")
     GameDTO.GamePlayerDTO updateDtoWithScore(GameDTO.GamePlayerDTO dto, int score);
-
-
 }

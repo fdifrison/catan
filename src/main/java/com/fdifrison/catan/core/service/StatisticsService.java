@@ -1,10 +1,12 @@
 package com.fdifrison.catan.core.service;
 
-import com.fdifrison.catan.core.dto.DiceDashboardDTO;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
+import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +21,16 @@ public class StatisticsService {
         this.gamePlayerMapper = gamePlayerMapper;
     }
 
-    public DiceDashboardDTO getGameDiceDashboard(long gameId) {
-        var diceDashboard = new DiceDashboardDTO();
-        turnRepository
-                .findDiceCountByGameId(gameId)
-                .forEach(dice -> diceDashboard.getDiceCountMap().replace(dice.outcome(), dice.count()));
-        return diceDashboard;
+    public Map<Long, Map<Long, Long>> getGameDiceDashboard(long gameId) {
+        return turnRepository.findDiceCountByGameId(gameId).stream()
+                .collect(Collectors.groupingBy(
+                        PlayerDiceRollsCount::playerId,
+                        Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count)));
     }
 
-    public DiceDashboardDTO getPlayerOverallDiceDashboard(long playerId) {
-        var diceDashboard = new DiceDashboardDTO();
-        turnRepository
-                .findOverallDiceCountByPlayerId(playerId)
-                .forEach(dice -> diceDashboard.getDiceCountMap().replace(dice.outcome(), dice.count()));
-        return diceDashboard;
+    public Map<Long, Long> getPlayerOverallDiceDashboard(long playerId) {
+        return turnRepository.findOverallDiceCountByPlayerId(playerId).stream()
+                .collect(Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count));
     }
 
     public List<GameDTO.GamePlayerDTO> computeGamePlayerStatistics(

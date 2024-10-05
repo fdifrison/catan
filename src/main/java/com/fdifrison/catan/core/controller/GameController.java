@@ -3,6 +3,7 @@ package com.fdifrison.catan.core.controller;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.dto.TurnDTO;
+import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.service.GameService;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("game")
@@ -45,5 +48,10 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     public void newTurn(@PathVariable long id, @RequestBody @Valid TurnDTO turnDTO) {
         gameService.newTurn(id, turnDTO);
+    }
+
+    @PutMapping("{id}")
+    public void endGame(@PathVariable long id, @RequestBody @Valid List<GameDTO.GamePlayerDTO> players) {
+        gameService.endGame(id, players);
     }
 }

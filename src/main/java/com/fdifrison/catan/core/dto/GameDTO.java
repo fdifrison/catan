@@ -40,7 +40,8 @@ public record GameDTO(@NotNull GameInfoDTO gameInfo, @NotNull List<GamePlayerDTO
             boolean largestArmy,
             @Min(0) int plainScore,
             int victoryPointsDrawn,
-            boolean winner) implements Comparable<GamePlayerDTO> {
+            boolean winner)
+            implements Comparable<GamePlayerDTO> {
         @Override
         public int compareTo(GamePlayerDTO o) {
             return Long.compare(playerId, o.playerId);

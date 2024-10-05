@@ -38,7 +38,7 @@ public class Game {
     private Instant endTimestamp;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Turn> turns = new ArrayList<>();
+    private List<Turn> turns = new LinkedList<>();
 
     @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GamePlayer> gamePlayers = new ArrayList<>();

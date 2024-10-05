@@ -8,7 +8,6 @@ import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
-import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import java.time.Instant;
@@ -89,9 +88,7 @@ public class GameService {
     }
 
     private List<GameDTO.GamePlayerDTO> getGamePlayerDTOS(List<GamePlayer> gamePlayers) {
-        var playersId = gamePlayers.stream()
-                .map(GamePlayer::getPlayerId)
-                .toList();
+        var playersId = gamePlayers.stream().map(GamePlayer::getPlayerId).toList();
         var players = playerService.findPlayerByIdIn(playersId);
         return StreamUtils.zip(gamePlayers.stream(), players.stream(), gamePlayerMapper::toDto)
                 .toList();

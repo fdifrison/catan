@@ -18,7 +18,7 @@ public class GamePlayerService {
     }
 
     protected GamePlayer createGamePlayer(GameSetupDTO.GamePlayerInfoDTO playerInfo) {
-        var entity = gamePlayerMapper.toEntity(playerInfo);
+        var entity = gamePlayerMapper.PlayerInfoToEntity(playerInfo);
         return gamePlayerRepository.save(entity);
     }
 }

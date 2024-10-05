@@ -13,7 +13,9 @@ public interface GameMapper {
     @Mapping(target = "startTimestamp", ignore = true)
     @Mapping(target = "endTimestamp", ignore = true)
     @Mapping(target = "turns", ignore = true)
+    @Mapping(target = "gamePlayers", ignore = true)
     Game initEntity(GameSetupDTO.GameInfoDTO gameInfo);
 
-    GameDTO.GameInfoDTO toDto(Game game);
+    @Mapping(target = "turnNumber", source = "turnNumber")
+    GameDTO.GameInfoDTO toDto(Game game, long turnNumber);
 }

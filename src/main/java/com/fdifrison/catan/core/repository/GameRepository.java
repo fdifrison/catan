@@ -16,7 +16,7 @@ public interface GameRepository extends JpaRepository<Game, Long>, JpaSpecificat
     Optional<Game> findWithGamePlayersById(long id);
 
     @EntityGraph(attributePaths = "turns")
-    Optional<Game> findWithTurnsById(Long id);
+    Optional<Game> findWithTurnsById(long id);
 
     @EntityGraph(attributePaths = "gamePlayers")
     @Override

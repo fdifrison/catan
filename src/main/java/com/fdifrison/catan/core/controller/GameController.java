@@ -42,10 +42,16 @@ public class GameController {
         return gameService.search(pageable);
     }
 
-    @PostMapping("{id}/turn")
+    @PostMapping("{gameId}/turn")
     @ResponseStatus(HttpStatus.CREATED)
-    public void newTurn(@PathVariable long id, @RequestBody @Valid TurnDTO turnDTO) {
-        gameService.newTurn(id, turnDTO);
+    public void newTurn(@PathVariable long gameId, @RequestBody @Valid TurnDTO turnDTO) {
+        gameService.newTurn(gameId, turnDTO);
+    }
+
+    @DeleteMapping("{gameId}/turn")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLastTurn(@PathVariable long gameId) {
+        gameService.deleteLastTurn(gameId);
     }
 
     @PutMapping("{id}")

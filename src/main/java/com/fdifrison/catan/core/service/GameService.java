@@ -8,6 +8,7 @@ import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
+import com.fdifrison.catan.core.entity.Turn;
 import com.fdifrison.catan.core.exception.GameNotFoundException;
 import com.fdifrison.catan.core.repository.GameRepository;
 import java.time.Instant;
@@ -88,24 +89,24 @@ public class GameService {
     }
 
     private List<GameDTO.GamePlayerDTO> getGamePlayerDTOS(List<GamePlayer> gamePlayers) {
-        var players = gamePlayers.stream()
+        var playersId = gamePlayers.stream()
                 .map(GamePlayer::getPlayerId)
-                .map(playerService::findPlayerById)
                 .toList();
+        var players = playerService.findPlayerByIdIn(playersId);
         return StreamUtils.zip(gamePlayers.stream(), players.stream(), gamePlayerMapper::toDto)
                 .toList();
     }
 
     @Transactional
     public void newTurn(long id, TurnDTO turnDTO) {
-        var game = findGameById(id);
+        var game = gameRepository.findWithTurnsById(id).orElseThrow(GameNotFoundException::new);
         var turn = turnService.newTurn(turnDTO, game);
         game.addTurn(turn);
     }
 
     @Transactional
     public void endGame(long id, List<GameDTO.GamePlayerDTO> players) {
-        Game game = findGameById(id).setEndTimestamp(Instant.now());
+        var game = findGameById(id).setEndTimestamp(Instant.now());
         game.getGamePlayers().forEach(gamePlayer -> {
             var matchByPlayerId = players.stream()
                     .filter(player -> player.playerId() == gamePlayer.getPlayerId())
@@ -113,5 +114,11 @@ public class GameService {
                     .getFirst();
             gamePlayerMapper.updateEntity(gamePlayer, matchByPlayerId);
         });
+    }
+
+    @Transactional
+    public void deleteLastTurn(long gameId) {
+        var game = gameRepository.findWithTurnsById(gameId).orElseThrow(GameNotFoundException::new);
+        game.getTurns().removeLast();
     }
 }

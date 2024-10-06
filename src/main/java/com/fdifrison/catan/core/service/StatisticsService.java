@@ -22,10 +22,29 @@ public class StatisticsService {
     }
 
     public Map<Long, Map<Long, Long>> getGameDiceDashboard(long gameId) {
-        return turnRepository.findDiceCountByGameId(gameId).stream()
+        Map<Long, Map<Long, Long>> diceByPlayerMap = turnRepository.findDiceCountByGameId(gameId).stream()
                 .collect(Collectors.groupingBy(
                         PlayerDiceRollsCount::playerId,
                         Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count)));
+        var probabilisticDistribution = computeProbabilisticDistribution(gameId);
+        diceByPlayerMap.put(0L, probabilisticDistribution);
+        return diceByPlayerMap;
+    }
+
+    private Map<Long, Long> computeProbabilisticDistribution(long gameId) {
+        long turnNumber = turnRepository.countByGameId(gameId);
+        return Map.ofEntries(
+                Map.entry(2L, turnNumber / 36L),
+                Map.entry(3L, turnNumber * 2 / 36L),
+                Map.entry(4L, turnNumber * 3 / 36L),
+                Map.entry(5L, turnNumber * 4 / 36L),
+                Map.entry(6L, turnNumber * 5 / 36L),
+                Map.entry(7L, turnNumber * 6 / 36L),
+                Map.entry(8L, turnNumber * 5 / 36L),
+                Map.entry(9L, turnNumber * 4 / 36L),
+                Map.entry(10L, turnNumber * 3 / 36L),
+                Map.entry(11L, turnNumber * 2 / 36L),
+                Map.entry(12L, turnNumber / 36L));
     }
 
     public Map<Long, Long> getPlayerOverallDiceDashboard(long playerId) {

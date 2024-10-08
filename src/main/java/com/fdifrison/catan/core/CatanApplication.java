@@ -78,7 +78,7 @@ public class CatanApplication {
                     new GameSetupDTO.GamePlayerInfoDTO(5, p5Id, 2, faker.color().hex());
 
             var gameId = gameService.createGame(new GameSetupDTO(
-                    new GameSetupDTO.GameInfoDTO(faker.book().title(), Game.GameType.STANDARD, 14),
+                    new GameSetupDTO.SetupDTO(faker.book().title(), Game.GameType.STANDARD, 14),
                     List.of(po1, po2, po3, po4, po5)));
 
             for (int i = 0; i < 10; i++) {

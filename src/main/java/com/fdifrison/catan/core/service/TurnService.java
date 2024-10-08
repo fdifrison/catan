@@ -29,6 +29,9 @@ public class TurnService {
                 .setPlayer(player)
                 .setOutcome(0)
                 .setDevelopCardDrawn(0)
+                .setKnightCardPlayed(false)
+                .setLongestRoad(false)
+                .setLargestArmy(false)
                 .setRoadsBuilt(2)
                 .setColoniesBuilt(2)
                 .setCitiesBuilt(0);

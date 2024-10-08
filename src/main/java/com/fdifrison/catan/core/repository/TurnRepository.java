@@ -54,12 +54,12 @@ public interface TurnRepository extends JpaRepository<Turn, Long> {
                         sum(t.colonies_built) as coloniesbuilt,
                         sum(t.cities_built) as citiesbuilt,
                         case
-                            when max(case when t.longest_road = true then t.id else 0 end) = lt.last_longest_road
+                            when max(case when t.longest_road = true then t.id else -1 end) = lt.last_longest_road
                                 then true
                             else false
                             end as longestRoad,
                         case
-                            when max(case when t.largest_army = true then t.id else 0 end) = lt.last_largest_army
+                            when max(case when t.largest_army = true then t.id else -1 end) = lt.last_largest_army
                                 then true
                             else false
                             end as largestArmy

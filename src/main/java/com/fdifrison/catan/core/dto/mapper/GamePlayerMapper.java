@@ -22,6 +22,7 @@ public interface GamePlayerMapper {
     @Mapping(target = "gameId", ignore = true)
     GamePlayer toEntity(GameDTO.GamePlayerDTO gamePlayerDTO);
 
+    @Mapping(target = "gameId", ignore = true)
     void updateEntity(@MappingTarget GamePlayer gamePlayer, GameDTO.GamePlayerDTO gamePlayerDTO);
 
     @Mapping(target = "gameId", source = "gameId")

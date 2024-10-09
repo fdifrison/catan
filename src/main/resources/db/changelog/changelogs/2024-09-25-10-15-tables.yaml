@@ -218,3 +218,29 @@ databaseChangeLog:
 
 
 
+  - changeSet:
+      id: 5
+      author: fdifrison
+      changes:
+        - createView:
+            catalogName: cat
+            encoding: UTF-8
+            fullDefinition: false
+            relativeToChangelogFile: true
+            replaceIfExists: false
+            schemaName: public
+            selectQuery: select
+              t.game_id as game_id,
+              p.id as player_id,
+              sum(t.develop_card_drawn) as develop_card_drawn,
+              count(case when t.knight_card_played then 1 end) as knight_card_played,
+              sum(t.roads_built) as roads_built,
+              sum(t.colonies_built) as colonies_built,
+              sum(t.cities_built) as cities_built,
+              max(case when t.longest_road = true then t.id else -1 end) as last_turn_when_longest_road,
+              max(case when t.largest_army = true then t.id else -1 end) as last_turn_when_largest_army
+              from Turn t
+              join Player p on p.id = t.player_id
+              group by t.game_id, p.id
+              order by p.id asc
+            viewName: turn_view

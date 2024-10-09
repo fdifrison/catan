@@ -6,9 +6,13 @@ import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.entity.Turn;
+import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
+import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
 import com.fdifrison.catan.core.exception.TurnMalformedException;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TurnService {
@@ -51,5 +55,21 @@ public class TurnService {
         if (playerNotInGame) {
             throw new TurnMalformedException("The player associated with this turn does not belong to the game");
         }
+    }
+
+    public List<PlayerDiceRollsCount> findDiceCountByGameId(long gameId) {
+        return turnRepository.findDiceCountByGameId(gameId);
+    }
+
+    public List<PlayerDiceRollsCount> findOverallDiceCountByPlayerId(long playerId) {
+        return turnRepository.findOverallDiceCountByPlayerId(playerId);
+    }
+
+    public List<GamePlayerStatistics> computeGamePlayerStatistics(long gameId) {
+        return turnRepository.computeGamePlayerStatistics(gameId);
+    }
+
+    public long countByGameId(long gameId) {
+        return turnRepository.countByGameId(gameId);
     }
 }

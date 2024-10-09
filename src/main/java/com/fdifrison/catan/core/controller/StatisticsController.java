@@ -1,6 +1,8 @@
 package com.fdifrison.catan.core.controller;
 
+import com.fdifrison.catan.core.dto.PlayerStatisticsDTO;
 import com.fdifrison.catan.core.service.StatisticsService;
+import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +17,7 @@ public class StatisticsController {
     }
 
     @GetMapping("game-dice-dashboard")
-    public Map<Long, Map<Long, Long>> getGameDiceDashboard(@RequestParam("gameId") long gameId) {
+    public List<PlayerStatisticsDTO> getGameDiceDashboard(@RequestParam("gameId") long gameId) {
         return statisticsService.getGameDiceDashboard(gameId);
     }
 

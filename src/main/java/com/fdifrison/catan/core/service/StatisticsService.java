@@ -3,28 +3,36 @@ package com.fdifrison.catan.core.service;
 import com.fdifrison.catan.core.dto.GameDTO;
 import com.fdifrison.catan.core.dto.PlayerStatisticsDTO;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
+import com.fdifrison.catan.core.entity.TurnView;
 import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
+import com.fdifrison.catan.core.repository.GameRepository;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalLong;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.fdifrison.catan.core.repository.TurnViewRepository;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StatisticsService {
 
-    private final TurnRepository turnRepository;
-    private final GamePlayerMapper gamePlayerMapper;
 
-    public StatisticsService(TurnRepository turnRepository, GamePlayerMapper gamePlayerMapper) {
-        this.turnRepository = turnRepository;
+    private final TurnViewRepository turnViewRepository;
+    private final GamePlayerMapper gamePlayerMapper;
+    private final TurnService turnService;
+
+    public StatisticsService(TurnRepository turnRepository, TurnViewRepository turnViewRepository, GamePlayerMapper gamePlayerMapper, TurnService turnService) {
+        this.turnViewRepository = turnViewRepository;
         this.gamePlayerMapper = gamePlayerMapper;
+        this.turnService = turnService;
     }
 
     public List<PlayerStatisticsDTO> getGameDiceDashboard(long gameId) {
-        var playerStatisticsDTOS = turnRepository.findDiceCountByGameId(gameId).stream()
+        var playerStatisticsDTOS = turnService.findDiceCountByGameId(gameId).stream()
                 .collect(Collectors.groupingBy(
                         PlayerDiceRollsCount::playerId,
                         Collectors.collectingAndThen(
@@ -48,7 +56,7 @@ public class StatisticsService {
     }
 
     private PlayerStatisticsDTO.DiceStatisticsDTO computeProbabilisticDistribution(long gameId) {
-        long turnNumber = turnRepository.countByGameId(gameId);
+        long turnNumber = turnService.countByGameId(gameId);
         var dices = Set.of(2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L);
         var probability = List.of(
                 1 / 36D, 2 / 36D, 3 / 36D, 4 / 36D, 5 / 36D, 6 / 36D, 5 / 36D, 4 / 36D, 3 / 36D, 2 / 36D, 1 / 36D);
@@ -57,13 +65,23 @@ public class StatisticsService {
     }
 
     public Map<Long, Long> getPlayerOverallDiceDashboard(long playerId) {
-        return turnRepository.findOverallDiceCountByPlayerId(playerId).stream()
+        return turnService.findOverallDiceCountByPlayerId(playerId).stream()
                 .collect(Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count));
+    }
+
+    public List<GameDTO.GamePlayerDTO> computeGamePlayerStatisticsWithView(
+            long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
+
+        var turns = turnViewRepository.findByGameIdOrderByPlayerIdAsc(gameId);
+        OptionalLong maxLargestArmy = turns.stream().mapToLong(TurnView::getLastTurnLargestArmy).max();
+        turns.stream().map(TurnView::getLastTurnLargestArmy);
+
+        return null;
     }
 
     public List<GameDTO.GamePlayerDTO> computeGamePlayerStatistics(
             long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
-        var statistics = turnRepository.computeGamePlayerStatistics(gameId);
+        var statistics = turnService.computeGamePlayerStatistics(gameId);
         return StreamUtils.zip(
                         gamePlayers.stream().sorted(), statistics.stream(), gamePlayerMapper::updateDtoWithStatistics)
                 .map(this::computePlayerScore)
@@ -78,6 +96,6 @@ public class StatisticsService {
 
     // remove the positioning initial turns from count
     public long countTurns(long gameId, int numOfPlayers) {
-        return turnRepository.countByGameId(gameId) - numOfPlayers;
+        return turnService.countByGameId(gameId) - numOfPlayers;
     }
 }

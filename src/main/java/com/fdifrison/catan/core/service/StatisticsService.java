@@ -1,11 +1,13 @@
 package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.GameDTO;
+import com.fdifrison.catan.core.dto.PlayerStatisticsDTO;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
 import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
 import com.fdifrison.catan.core.repository.TurnRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
@@ -21,30 +23,37 @@ public class StatisticsService {
         this.gamePlayerMapper = gamePlayerMapper;
     }
 
-    public Map<Long, Map<Long, Long>> getGameDiceDashboard(long gameId) {
-        Map<Long, Map<Long, Long>> diceByPlayerMap = turnRepository.findDiceCountByGameId(gameId).stream()
+    public List<PlayerStatisticsDTO> getGameDiceDashboard(long gameId) {
+        var playerStatisticsDTOS = turnRepository.findDiceCountByGameId(gameId).stream()
                 .collect(Collectors.groupingBy(
                         PlayerDiceRollsCount::playerId,
-                        Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count)));
+                        Collectors.collectingAndThen(
+                                Collectors.toMap(PlayerDiceRollsCount::outcome, PlayerDiceRollsCount::count), map -> {
+                                    return new PlayerStatisticsDTO.DiceStatisticsDTO(
+                                            map.keySet(),
+                                            map.values().stream()
+                                                    .map(Long::doubleValue)
+                                                    .toList());
+                                })))
+                .entrySet()
+                .stream()
+                .map(k -> {
+                    return new PlayerStatisticsDTO(k.getKey(), k.getValue());
+                })
+                .collect(Collectors.toList());
         var probabilisticDistribution = computeProbabilisticDistribution(gameId);
-        diceByPlayerMap.put(0L, probabilisticDistribution);
-        return diceByPlayerMap;
+        var distribution = new PlayerStatisticsDTO(0, probabilisticDistribution);
+        playerStatisticsDTOS.add(distribution);
+        return playerStatisticsDTOS;
     }
 
-    private Map<Long, Long> computeProbabilisticDistribution(long gameId) {
+    private PlayerStatisticsDTO.DiceStatisticsDTO computeProbabilisticDistribution(long gameId) {
         long turnNumber = turnRepository.countByGameId(gameId);
-        return Map.ofEntries(
-                Map.entry(2L, turnNumber / 36L),
-                Map.entry(3L, turnNumber * 2 / 36L),
-                Map.entry(4L, turnNumber * 3 / 36L),
-                Map.entry(5L, turnNumber * 4 / 36L),
-                Map.entry(6L, turnNumber * 5 / 36L),
-                Map.entry(7L, turnNumber * 6 / 36L),
-                Map.entry(8L, turnNumber * 5 / 36L),
-                Map.entry(9L, turnNumber * 4 / 36L),
-                Map.entry(10L, turnNumber * 3 / 36L),
-                Map.entry(11L, turnNumber * 2 / 36L),
-                Map.entry(12L, turnNumber / 36L));
+        var dices = Set.of(2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L);
+        var probability = List.of(
+                1 / 36D, 2 / 36D, 3 / 36D, 4 / 36D, 5 / 36D, 6 / 36D, 5 / 36D, 4 / 36D, 3 / 36D, 2 / 36D, 1 / 36D);
+        return new PlayerStatisticsDTO.DiceStatisticsDTO(
+                dices, probability.stream().map(i -> i * turnNumber).toList());
     }
 
     public Map<Long, Long> getPlayerOverallDiceDashboard(long playerId) {

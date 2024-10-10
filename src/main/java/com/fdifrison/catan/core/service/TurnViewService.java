@@ -23,17 +23,16 @@ public class TurnViewService {
     }
 
     protected List<GamePlayerStatisticsDTO> getGamePlayerStatisticsFromTurnViews(List<TurnView> turns) {
-        var maxLargestArmy =
-                turns.stream().mapToLong(TurnView::getLastTurnLargestArmy).max().orElseGet(() -> -1L);
+        var maxLargestArmy = turns.stream().mapToLong(TurnView::getLastTurnLargestArmy).max().orElse(0);
         var maxLongestRoad =
-                turns.stream().mapToLong(TurnView::getLastTurnLongestRoad).max().orElseGet(() -> -1L);
+                turns.stream().mapToLong(TurnView::getLastTurnLongestRoad).max().orElse(0);
         return turns.stream()
                 .map(turn -> {
                     var statisticsDTO = turnViewMapper.toGamePlayerStatisticsDTO(turn);
-                    if (turn.getLastTurnLargestArmy() == maxLargestArmy) {
+                    if (maxLargestArmy!= -1L && turn.getLastTurnLargestArmy() == maxLargestArmy) {
                         statisticsDTO.setLargestArmy(true);
                     }
-                    if (turn.getLastTurnLongestRoad() == maxLongestRoad) {
+                    if (maxLongestRoad!= -1L && turn.getLastTurnLongestRoad() == maxLongestRoad) {
                         statisticsDTO.setLongestRoad(true);
                     }
                     return statisticsDTO;

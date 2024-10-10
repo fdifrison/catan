@@ -83,7 +83,7 @@ public class GameService {
         var gameInfoDTO = gameMapper.toDto(
                 game, statisticsService.countTurns(id, game.getGamePlayers().size()));
         var gamePlayerDTOs =
-                statisticsService.computeGamePlayerStatistics(id, getGamePlayerDTOS(game.getGamePlayers()));
+                statisticsService.computeGamePlayerStatisticsWithView(id, getGamePlayerDTOS(game.getGamePlayers()));
         return new GameDTO(gameInfoDTO, gamePlayerDTOs);
     }
 

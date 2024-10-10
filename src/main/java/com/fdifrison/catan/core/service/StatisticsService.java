@@ -1,39 +1,28 @@
 package com.fdifrison.catan.core.service;
 
 import com.fdifrison.catan.core.dto.GameDTO;
-import com.fdifrison.catan.core.dto.GamePlayerStatisticsDTO;
 import com.fdifrison.catan.core.dto.PlayerStatisticsDTO;
 import com.fdifrison.catan.core.dto.mapper.GamePlayerMapper;
-import com.fdifrison.catan.core.dto.mapper.TurnViewMapper;
-import com.fdifrison.catan.core.entity.TurnView;
-import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
 import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
-import com.fdifrison.catan.core.repository.GameRepository;
-import com.fdifrison.catan.core.repository.TurnRepository;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalLong;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.fdifrison.catan.core.repository.TurnViewRepository;
 import org.springframework.data.util.StreamUtils;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StatisticsService {
 
-
-    private final TurnViewRepository turnViewRepository;
     private final GamePlayerMapper gamePlayerMapper;
     private final TurnService turnService;
-    private final TurnViewMapper turnViewMapper;
+    private final TurnViewService turnViewService;
 
-    public StatisticsService(TurnRepository turnRepository, TurnViewRepository turnViewRepository, GamePlayerMapper gamePlayerMapper, TurnService turnService, TurnViewMapper turnViewMapper) {
-        this.turnViewRepository = turnViewRepository;
+    public StatisticsService(
+            GamePlayerMapper gamePlayerMapper, TurnService turnService, TurnViewService turnViewService) {
         this.gamePlayerMapper = gamePlayerMapper;
         this.turnService = turnService;
-        this.turnViewMapper = turnViewMapper;
+        this.turnViewService = turnViewService;
     }
 
     public List<PlayerStatisticsDTO> getGameDiceDashboard(long gameId) {
@@ -76,28 +65,8 @@ public class StatisticsService {
 
     public List<GameDTO.GamePlayerDTO> computeGamePlayerStatisticsWithView(
             long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
-        var turns = turnViewRepository.findByGameIdOrderByPlayerIdAsc(gameId);
-        var maxLargestArmy = turns.stream().mapToLong(TurnView::getLastTurnLargestArmy).max().orElseGet(() -> -1L);
-        var maxLongestRoad = turns.stream().mapToLong(TurnView::getLastTurnLongestRoad).max().orElseGet(() -> -1L);;
-        var statistics = turns.stream().map(turn -> {
-            var statisticsDTO = turnViewMapper.toGamePlayerStatisticsDTO(turn);
-            if (turn.getLastTurnLargestArmy() == maxLargestArmy) {
-                statisticsDTO.setLargestArmy(true);
-            }
-            if (turn.getLastTurnLongestRoad() == maxLongestRoad) {
-                statisticsDTO.setLongestRoad(true);
-            }
-            return statisticsDTO;
-        }).toList();
-        return StreamUtils.zip(
-                        gamePlayers.stream().sorted(), statistics.stream(), gamePlayerMapper::updateDtoWithStatistics)
-                .map(this::computePlayerScore)
-                .toList();
-    }
-
-    public List<GameDTO.GamePlayerDTO> computeGamePlayerStatistics(
-            long gameId, List<GameDTO.GamePlayerDTO> gamePlayers) {
-        var statistics = turnService.computeGamePlayerStatistics(gameId);
+        var turns = turnViewService.findByGameIdOrderByPlayerIdAsc(gameId);
+        var statistics = turnViewService.getGamePlayerStatisticsFromTurnViews(turns);
         return StreamUtils.zip(
                         gamePlayers.stream().sorted(), statistics.stream(), gamePlayerMapper::updateDtoWithStatistics)
                 .map(this::computePlayerScore)

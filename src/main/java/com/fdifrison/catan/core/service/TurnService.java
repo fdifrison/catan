@@ -6,13 +6,11 @@ import com.fdifrison.catan.core.entity.Game;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.entity.Turn;
-import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
 import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
 import com.fdifrison.catan.core.exception.TurnMalformedException;
 import com.fdifrison.catan.core.repository.TurnRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TurnService {
@@ -63,10 +61,6 @@ public class TurnService {
 
     public List<PlayerDiceRollsCount> findOverallDiceCountByPlayerId(long playerId) {
         return turnRepository.findOverallDiceCountByPlayerId(playerId);
-    }
-
-    public List<GamePlayerStatistics> computeGamePlayerStatistics(long gameId) {
-        return turnRepository.computeGamePlayerStatistics(gameId);
     }
 
     public long countByGameId(long gameId) {

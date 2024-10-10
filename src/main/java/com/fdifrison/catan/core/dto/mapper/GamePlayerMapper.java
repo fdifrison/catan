@@ -5,7 +5,6 @@ import com.fdifrison.catan.core.dto.GamePlayerStatisticsDTO;
 import com.fdifrison.catan.core.dto.GameSetupDTO;
 import com.fdifrison.catan.core.entity.GamePlayer;
 import com.fdifrison.catan.core.entity.Player;
-import com.fdifrison.catan.core.entity.projection.GamePlayerStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
@@ -47,16 +46,6 @@ public interface GamePlayerMapper {
     @Mapping(target = "longestRoad", ignore = true)
     @Mapping(target = "largestArmy", ignore = true)
     GameDTO.GamePlayerDTO toDto(GamePlayer gamePlayer, Player player);
-
-    @Mapping(target = "developCardDrawn", source = "statistics.developCardDrawn")
-    @Mapping(target = "knightCardPlayed", source = "statistics.knightCardPlayed")
-    @Mapping(target = "roadsBuilt", source = "statistics.roadsBuilt")
-    @Mapping(target = "coloniesBuilt", source = "statistics.coloniesBuilt")
-    @Mapping(target = "citiesBuilt", source = "statistics.citiesBuilt")
-    @Mapping(target = "longestRoad", source = "statistics.longestRoad")
-    @Mapping(target = "largestArmy", source = "statistics.largestArmy")
-    GameDTO.GamePlayerDTO updateDtoWithStatistics(GameDTO.GamePlayerDTO dto, GamePlayerStatistics statistics);
-
 
     @Mapping(target = "playerId", source = "dto.playerId")
     @Mapping(target = "developCardDrawn", source = "statistics.developCardDrawn")

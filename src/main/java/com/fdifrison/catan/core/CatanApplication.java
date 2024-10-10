@@ -46,16 +46,16 @@ public class CatanApplication {
                 var p5Id = playerService.newPlayer(p5);
                 var p6Id = playerService.newPlayer(p6);
 
-                var po1 =
-                        new GameSetupDTO.GamePlayerInfoDTO(1, p1Id, 3, faker.color().hex());
-                var po2 =
-                        new GameSetupDTO.GamePlayerInfoDTO(2, p2Id, 5, faker.color().hex());
-                var po3 =
-                        new GameSetupDTO.GamePlayerInfoDTO(3, p3Id, 1, faker.color().hex());
-                var po4 =
-                        new GameSetupDTO.GamePlayerInfoDTO(4, p4Id, 4, faker.color().hex());
-                var po5 =
-                        new GameSetupDTO.GamePlayerInfoDTO(5, p5Id, 2, faker.color().hex());
+                var po1 = new GameSetupDTO.GamePlayerInfoDTO(
+                        1, p1Id, 3, faker.color().hex());
+                var po2 = new GameSetupDTO.GamePlayerInfoDTO(
+                        2, p2Id, 5, faker.color().hex());
+                var po3 = new GameSetupDTO.GamePlayerInfoDTO(
+                        3, p3Id, 1, faker.color().hex());
+                var po4 = new GameSetupDTO.GamePlayerInfoDTO(
+                        4, p4Id, 4, faker.color().hex());
+                var po5 = new GameSetupDTO.GamePlayerInfoDTO(
+                        5, p5Id, 2, faker.color().hex());
 
                 var gameId = gameService.createGame(new GameSetupDTO(
                         new GameSetupDTO.SetupDTO(faker.book().title(), Game.GameType.STANDARD, 14),
@@ -89,12 +89,9 @@ public class CatanApplication {
                 gameService.endGame(gameId, gameDTO.gamePlayers());
                 System.out.println();
 
-
             } catch (Exception ignored) {
                 ;
             }
-
-
         };
     }
 }

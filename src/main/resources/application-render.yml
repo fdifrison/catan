@@ -10,7 +10,7 @@ spring:
   datasource:
     username: catan
     password:
-    url: jdbc:postgresql://dpg-croo0e68ii6s73bebm60-a.frankfurt-postgres.render.com/catan_0w58
+    url: jdbc:postgresql://dpg-cs0l1ljtq21c73ef8e4g-a.frankfurt-postgres.render.com/catandb_g03a
 
   jackson:
     default-property-inclusion: NON_NULL

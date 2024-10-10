@@ -2,8 +2,6 @@ package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "player")
@@ -24,20 +22,6 @@ public class Player {
 
     @Column(name = "deleted")
     private boolean deleted;
-
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Turn> turns = new ArrayList<>();
-
-    public Player addTurn(Turn turn) {
-        this.turns.add(turn);
-        turn.setPlayer(this);
-        return this;
-    }
-
-    public void removeTurn(Turn turn) {
-        this.turns.remove(turn);
-        turn.setPlayer(null);
-    }
 
     public long getId() {
         return id;

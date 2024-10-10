@@ -17,6 +17,7 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: email
                   type: text
@@ -48,6 +49,21 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
+                  name: game_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: game_type
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: required_victory_points
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
                   name: start_timestamp
                   type: timestamp with time zone
                   constraints:
@@ -63,51 +79,57 @@ databaseChangeLog:
       author: fdifrison
       changes:
         - createTable:
-            tableName: player_score
+            tableName: game_player
             columns:
               - column:
                   name: game_id
                   type: bigint
                   constraints:
+                    primaryKey: true
                     referencedTableName: game
                     referencedColumnNames: id
                     foreignKeyName: player_score_game_id
                     unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
                   name: player_id
                   type: bigint
                   constraints:
+                    primaryKey: true
                     referencedTableName: player
                     referencedColumnNames: id
                     foreignKeyName: player_score_player_id
                     unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
                   name: start_order
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
                     unique: true
-                    uniqueConstraintName: game_id_player_id_start_order_unique
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
-                  name: longest_road
-                  type: boolean
+                  name: player_color
+                  type: text
                   constraints:
-                    nullable: true
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: game_id_player_id_start_order_color_unique
               - column:
-                  name: largest_army
-                  type: boolean
-                  constraints:
-                    nullable: true
-              - column:
-                  name: score
+                  name: plain_score
                   type: int
                   constraints:
                     nullable: true
               - column:
-                  name: victory_points
+                  name: victory_points_drawn
                   type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: winner
+                  type: boolean
                   constraints:
                     nullable: true
 
@@ -124,14 +146,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                  name: player_id
-                  type: bigint
-                  constraints:
-                    referencedTableName: player
-                    referencedColumnNames: id
-                    foreignKeyName: turn_player_id
-                    nullable: false
-              - column:
                   name: game_id
                   type: bigint
                   constraints:
@@ -140,13 +154,18 @@ databaseChangeLog:
                     foreignKeyName: turn_game_id
                     nullable: false
               - column:
+                  name: player_id
+                  type: bigint
+                  constraints:
+                    referencedTableName: player
+                    referencedColumnNames: id
+                    foreignKeyName: turn_player_id
+                    nullable: false
+              - column:
                   name: start_timestamp
                   type: timestamp with time zone
                   constraints:
                     nullable: false
-              - column:
-                  name: end_timestamp
-                  type: timestamp with time zone
               - column:
                   name: outcome
                   type: int
@@ -158,7 +177,17 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: develop_card_played
+                  name: knight_card_played
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: longest_road
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: largest_army
                   type: boolean
                   constraints:
                     nullable: false
@@ -189,3 +218,29 @@ databaseChangeLog:
 
 
 
+  - changeSet:
+      id: 5
+      author: fdifrison
+      changes:
+        - createView:
+            catalogName: cat
+            encoding: UTF-8
+            fullDefinition: false
+            relativeToChangelogFile: true
+            replaceIfExists: false
+            schemaName: public
+            selectQuery: select
+              t.game_id as game_id,
+              p.id as player_id,
+              sum(t.develop_card_drawn) as develop_card_drawn,
+              count(case when t.knight_card_played then 1 end) as knight_card_played,
+              sum(t.roads_built) as roads_built,
+              sum(t.colonies_built) as colonies_built,
+              sum(t.cities_built) as cities_built,
+              max(case when t.longest_road = true then t.id else -1 end) as last_turn_when_longest_road,
+              max(case when t.largest_army = true then t.id else -1 end) as last_turn_when_largest_army
+              from Turn t
+              join Player p on p.id = t.player_id
+              group by t.game_id, p.id
+              order by p.id asc
+            viewName: turn_view

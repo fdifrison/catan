@@ -1,7 +1,8 @@
 package com.fdifrison.catan.core.controller;
 
 import com.fdifrison.catan.core.dto.GameDTO;
-import com.fdifrison.catan.core.dto.PlayerScoreDTO;
+import com.fdifrison.catan.core.dto.GameSetupDTO;
+import com.fdifrison.catan.core.dto.TurnDTO;
 import com.fdifrison.catan.core.service.GameService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -11,10 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Validated
 @RestController
 @RequestMapping("game")
 public class GameController {
@@ -27,30 +26,36 @@ public class GameController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public long createNewGame(@RequestBody @Valid List<PlayerScoreDTO> players) {
-        return gameService.createNewGame(players);
+    public long createGame(@RequestBody @Valid GameSetupDTO gameSetup) {
+        return gameService.createGame(gameSetup);
     }
 
-    @PutMapping("{id}")
-    public GameDTO updateScoreAndEndGame(@PathVariable long id, @RequestBody @Valid List<PlayerScoreDTO> players) {
-        return gameService.updateScoreAndEndGame(id, players);
-    }
-
-    @GetMapping("{id}/score")
-    public List<PlayerScoreDTO> getGameRanking(@PathVariable long id) {
-        return gameService.getGameRanking(id);
-    }
-
-    @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGame(@PathVariable long id) {
-        gameService.deleteGame(id);
+    @GetMapping("{id}")
+    public GameDTO findGameById(@PathVariable long id) {
+        return gameService.getGameDTOByGameId(id);
     }
 
     @GetMapping
-    public Page<GameDTO> search(
+    public Page<GameDTO.GameInfoDTO> searchGames(
             @PageableDefault(sort = "startTimestamp", direction = Sort.Direction.DESC, size = 5) @ParameterObject
                     Pageable pageable) {
         return gameService.search(pageable);
+    }
+
+    @PostMapping("{gameId}/turn")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void newTurn(@PathVariable long gameId, @RequestBody @Valid TurnDTO turnDTO) {
+        gameService.newTurn(gameId, turnDTO);
+    }
+
+    @DeleteMapping("{gameId}/turn")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLastTurn(@PathVariable long gameId) {
+        gameService.deleteLastTurn(gameId);
+    }
+
+    @PutMapping("{id}")
+    public void endGame(@PathVariable long id, @RequestBody @Valid List<GameDTO.GamePlayerDTO> players) {
+        gameService.endGame(id, players);
     }
 }

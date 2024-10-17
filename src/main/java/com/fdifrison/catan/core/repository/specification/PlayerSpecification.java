@@ -33,9 +33,14 @@ public class PlayerSpecification implements Specification<Player> {
                 : null;
     }
 
+    private static Specification<Player> playerDeleted(boolean deleted) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Player_.deleted), deleted);
+    }
+
     @Override
     public Predicate toPredicate(Root<Player> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        return Specification.allOf(usernameLike(filter.username()), emailLike(filter.email()))
+        return Specification.allOf(
+                        usernameLike(filter.username()), emailLike(filter.email()), playerDeleted(filter.deleted()))
                 .toPredicate(root, query, criteriaBuilder);
     }
 }

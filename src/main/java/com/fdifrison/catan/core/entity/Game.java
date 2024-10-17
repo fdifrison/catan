@@ -1,6 +1,7 @@
 package com.fdifrison.catan.core.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,25 +9,39 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "game")
 public class Game {
+
+    public enum GameType {
+        STANDARD,
+        SEAFARERS
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private long id;
 
+    @NotNull @Column(name = "game_name")
+    private String gameName;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull @Column(name = "game_type")
+    private GameType gameType;
+
+    @NotNull @Column(name = "required_victory_points")
+    private int requiredVictoryPoints;
+
     @CreationTimestamp
-    @Column(name = "start_timestamp", nullable = false)
+    @Column(name = "start_timestamp")
     private Instant startTimestamp;
 
     @Column(name = "end_timestamp")
     private Instant endTimestamp;
 
-    @ElementCollection
-    @CollectionTable(name = "player_score", joinColumns = @JoinColumn(name = "game_id"))
-    @OrderBy("startOrder ASC")
-    private List<PlayerScore> playerScores = new ArrayList<>();
-
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Turn> turns = new ArrayList<>();
+    private List<Turn> turns = new LinkedList<>();
+
+    @OneToMany(mappedBy = "gameId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GamePlayer> gamePlayers = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -34,6 +49,33 @@ public class Game {
 
     public Game setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public @NotNull String getGameName() {
+        return gameName;
+    }
+
+    public Game setGameName(@NotNull String gameName) {
+        this.gameName = gameName;
+        return this;
+    }
+
+    public @NotNull GameType getGameType() {
+        return gameType;
+    }
+
+    public Game setGameType(@NotNull GameType gameType) {
+        this.gameType = gameType;
+        return this;
+    }
+
+    @NotNull public int getRequiredVictoryPoints() {
+        return requiredVictoryPoints;
+    }
+
+    public Game setRequiredVictoryPoints(@NotNull int requiredVictoryPoints) {
+        this.requiredVictoryPoints = requiredVictoryPoints;
         return this;
     }
 
@@ -55,19 +97,6 @@ public class Game {
         return this;
     }
 
-    public List<PlayerScore> getPlayerScores() {
-        return playerScores;
-    }
-
-    public Game setPlayerScores(List<PlayerScore> playerScores) {
-        this.playerScores = playerScores;
-        return this;
-    }
-
-    public List<Turn> getTurns() {
-        return turns;
-    }
-
     public Game addTurn(Turn turn) {
         turns.add(turn);
         turn.setGame(this);
@@ -77,5 +106,23 @@ public class Game {
     public void removeTurn(Turn turn) {
         turns.remove(turn);
         turn.setGame(null);
+    }
+
+    public List<Turn> getTurns() {
+        return turns;
+    }
+
+    public Game setTurns(List<Turn> turns) {
+        this.turns = turns;
+        return this;
+    }
+
+    public List<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public Game setGamePlayers(List<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+        return this;
     }
 }

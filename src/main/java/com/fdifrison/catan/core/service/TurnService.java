@@ -1,43 +1,69 @@
 package com.fdifrison.catan.core.service;
 
-import com.fdifrison.catan.core.dto.EndTurnDTO;
-import com.fdifrison.catan.core.dto.InitTurnDTO;
+import com.fdifrison.catan.core.dto.TurnDTO;
 import com.fdifrison.catan.core.dto.mapper.TurnMapper;
+import com.fdifrison.catan.core.entity.Game;
+import com.fdifrison.catan.core.entity.GamePlayer;
+import com.fdifrison.catan.core.entity.Player;
 import com.fdifrison.catan.core.entity.Turn;
-import com.fdifrison.catan.core.exception.GameAlreadyEndedException;
-import com.fdifrison.catan.core.exception.TurnNotFoundException;
-import com.fdifrison.catan.core.repository.GameRepository;
-import com.fdifrison.catan.core.repository.PlayerRepository;
+import com.fdifrison.catan.core.entity.projection.PlayerDiceRollsCount;
+import com.fdifrison.catan.core.exception.TurnMalformedException;
 import com.fdifrison.catan.core.repository.TurnRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TurnService {
 
     private final TurnRepository turnRepository;
-    private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
+    private final PlayerService playerService;
+    private final TurnMapper turnMapper;
 
-    public TurnService(
-            TurnRepository turnRepository, GameRepository gameRepository, PlayerRepository playerRepository) {
+    public TurnService(TurnRepository turnRepository, PlayerService playerService, TurnMapper turnMapper) {
         this.turnRepository = turnRepository;
-        this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository;
+        this.playerService = playerService;
+        this.turnMapper = turnMapper;
     }
 
-    @Transactional
-    public long initTurn(InitTurnDTO initTurnDTO) {
-        var game = gameRepository.getReferenceById(initTurnDTO.gameId());
-        if (game.getEndTimestamp() != null) throw new GameAlreadyEndedException();
-        var player = playerRepository.getReferenceById(initTurnDTO.playerId());
-        var turn = new Turn().setOutcome(initTurnDTO.outcome()).setGame(game).setPlayer(player);
-        return turnRepository.save(turn).getId();
+    protected Turn createFirstTurn(Player player, Game game) {
+        return new Turn()
+                .setGame(game)
+                .setPlayer(player)
+                .setOutcome(0)
+                .setDevelopCardDrawn(0)
+                .setKnightCardPlayed(false)
+                .setLongestRoad(false)
+                .setLargestArmy(false)
+                .setRoadsBuilt(2)
+                .setColoniesBuilt(2)
+                .setCitiesBuilt(0);
     }
 
-    @Transactional
-    public void endTurn(long id, EndTurnDTO endTurnDTO) {
-        var turn = turnRepository.findById(id).orElseThrow(TurnNotFoundException::new);
-        TurnMapper.INSTANCE.updateEntity(turn, endTurnDTO);
+    protected Turn newTurn(TurnDTO turnDTO, Game game) {
+        validateTurn(turnDTO, game);
+        var player = playerService.findPlayerById(turnDTO.playerId());
+        var turn = turnMapper.toEntity(turnDTO);
+        return turnRepository.save(turn.setGame(game).setPlayer(player));
+    }
+
+    private void validateTurn(TurnDTO turnDTO, Game game) {
+        var playerNotInGame = game.getGamePlayers().stream()
+                .map(GamePlayer::getPlayerId)
+                .noneMatch(pId -> pId.equals(turnDTO.playerId()));
+        if (playerNotInGame) {
+            throw new TurnMalformedException("The player associated with this turn does not belong to the game");
+        }
+    }
+
+    public List<PlayerDiceRollsCount> findDiceCountByGameId(long gameId) {
+        return turnRepository.findDiceCountByGameId(gameId);
+    }
+
+    public List<PlayerDiceRollsCount> findOverallDiceCountByPlayerId(long playerId) {
+        return turnRepository.findOverallDiceCountByPlayerId(playerId);
+    }
+
+    public long countByGameId(long gameId) {
+        return turnRepository.countByGameId(gameId);
     }
 }

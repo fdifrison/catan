@@ -21,7 +21,7 @@ public record GameSetupDTO(@NotNull GameSetupDTO.SetupDTO gameInfo, @Min(2) List
     public record GamePlayerInfoDTO(
             @JsonProperty(access = READ_ONLY) long gameId,
             long playerId,
-            @Min(0) @Max(6) int startOrder,
+            int startOrder,
             @NotNull String playerColor)
             implements Comparable<GamePlayerInfoDTO> {
 
